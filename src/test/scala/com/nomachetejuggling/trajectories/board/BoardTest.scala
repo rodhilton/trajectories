@@ -1,3 +1,5 @@
+package com.nomachetejuggling.trajectories.board
+
 import org.junit.Test
 import org.junit.Assert._
 
@@ -124,6 +126,110 @@ class BoardTest {
         assertTrue(a.isDefinedAt('b',2))
     }
 
+    @Test(expected = classOf[AssertionError])
+    def cannotCropOutOfBounds() {
+        val a = Board(4)
+
+        a.crop(('e',4), ('f', 3))
+    }
+
+    @Test(expected = classOf[AssertionError])
+    def cannotCropANonSquare() {
+        val a = Board(4)
+
+        a.crop(('a',4), ('b', 2))
+    }
+
+    //what if you crop empty?
+
+    @Test(expected = classOf[AssertionError])
+    def cannotCropInvalidly() {
+        val a = Board(4)
+
+        a.crop(('c',1), ('a', 3))
+    }
+
+    @Test
+    def shouldCheckForBoundaryRestrictions() {
+        val partial = Board.insideBounds(('b',3), ('c',2), _:Tuple2[Char, Int])
+
+        assertFalse(partial(('a',4)))
+        assertFalse(partial(('a',3)))
+        assertFalse(partial(('a',2)))
+        assertFalse(partial(('a',1)))
+
+        assertFalse(partial(('b',4)))
+        assertTrue (partial(('b',3)))
+        assertTrue (partial(('b',2)))
+        assertFalse(partial(('b',1)))
+
+        assertFalse(partial(('c',4)))
+        assertTrue (partial(('c',3)))
+        assertTrue (partial(('c',2)))
+        assertFalse(partial(('c',1)))
+
+        assertFalse(partial(('d',4)))
+        assertFalse(partial(('d',3)))
+        assertFalse(partial(('d',2)))
+        assertFalse(partial(('d',1)))
+    }
+
+    @Test
+    def canCrop() {
+        /*
+        [ ][6][ ][ ] 4
+        [ ][1][2][6] 3
+        [6][3][4][ ] 2
+        [ ][ ][6][ ] 1
+         a  b  c  d
+         */
+        val a = Board(4).set(
+            ('b',4) -> 6,
+            ('d',3) -> 6,
+            ('a',2) -> 6,
+            ('c',1) -> 6,
+            ('b',3) -> 1,
+            ('c',3) -> 2,
+            ('b',2) -> 3,
+            ('c',2) -> 4
+        )
+
+        val cropped = a.crop(('b', 3), ('c', 2))
+
+        assertEquals(cropped.size, 2)
+        assertEquals(cropped('a',2), 1)
+        assertEquals(cropped('b',2), 2)
+        assertEquals(cropped('a',1), 3)
+        assertEquals(cropped('b',1), 4)
+
+    }
+
+
+    @Test
+    def canCropTiny() {
+        /*
+        [4][3][2] 3
+        [5][8][1] 2
+        [6][7][0] 1
+         a  b  c
+         */
+        val a = Board(4).set(
+            ('a',1) -> 6,
+            ('a',2) -> 5,
+            ('a',3) -> 4,
+            ('b',1) -> 7,
+            ('b',2) -> 8,
+            ('b',3) -> 3,
+            ('c',1) -> 0,
+            ('c',2) -> 1,
+            ('c',3) -> 2
+        )
+
+        val cropped = a.crop(('b', 2), ('b', 2))
+
+        assertEquals(cropped.size, 1)
+        assertEquals(cropped('a',1), 8)
+    }
 
 
     /**
