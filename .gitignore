@@ -1,0 +1,6 @@
+out/
+.gradle
+*.ipr
+*.iws
+*.iml
+build/
