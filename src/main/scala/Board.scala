@@ -7,14 +7,11 @@ trait Board {
     def add(otherBoard: Board): Board
 
     //Convenience Interface:
-    def set(pair: Tuple2[Tuple2[Char, Int], Int]): Board = {
-        set(pair._1, pair._2)
+    def set(pairs: Tuple2[Tuple2[Char, Int], Int]*): Board = {
+        pairs.foldLeft(this){ case (b: Board, pair: Tuple2[Tuple2[Char, Int], Int]) =>
+            b.set(pair._1, pair._2)
+        }
     }
-//
-//    def set(pair: Tuple2[Tuple2[Char, Int], Int]): Board = {
-//        set(pair._1, pair._2)
-//    }
-
     def apply(t: Tuple2[Char, Int]): Int = get(t) match {
         case Some(x) => x
         case None => throw new NoSuchElementException
@@ -26,6 +23,9 @@ trait Board {
 
 object Board {
     def apply(size: Int): Board = new BoardImpl(size, Map.empty)
+
+    //TODO: figure out why I can't do this
+    //def apply(size: Int, pairs: Tuple2[Tuple2[Char, Int], Int]*): Board = Board(size).set(pairs)
 
     class BoardImpl(override val size: Int, boardSpace: Map[Tuple2[Char,Int], Int]) extends Board {
         val columns = ('a' to ('a' to 'z')(size-1))
