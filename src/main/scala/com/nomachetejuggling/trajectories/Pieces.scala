@@ -7,12 +7,19 @@ object Pieces {
     lazy val bishop = Piece(Moves.bishopMove)
     lazy val knight = Piece(Moves.knightMove)
     lazy val rook = Piece(Moves.rookMove)
+    lazy val pawn = Piece(Moves.pawnMove)
 
     private object Moves {
         lazy val rookMove = (from:Coordinates, to: Coordinates) => {
             val fromN = from.asNumeric
             val toN = to.asNumeric
             fromN._1 == toN._1 || fromN._2 == toN._2
+        }
+
+        lazy val pawnMove = (from:Coordinates, to: Coordinates) => {
+            val fromN = from.asNumeric
+            val toN = to.asNumeric
+            fromN._1 == toN._1 && toN._2 == fromN._2 + 1
         }
 
         lazy val bishopMove = (from:Coordinates, to: Coordinates) => {
