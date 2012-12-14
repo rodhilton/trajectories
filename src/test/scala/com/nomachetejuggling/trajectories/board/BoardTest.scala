@@ -309,20 +309,14 @@ class BoardTest {
             ('c',1)->3
         )
 
-        val b = Board(3).set(
-            ('b',3)->2,
-            ('b',2)->0,
-            ('c',2)->1,
-            ('a',1)->6,
-            ('b',1)->2,
-            ('c',1)->3
+        val b = Board(2).set(
+            ('a',1)->2,
+            ('a',2)->0,
+            ('b',1)->4,
+            ('b',2)->1
         )
 
-        //TODO: make sure you dont overlap a larger board
-        //TODO: make sure you can't overlap a board such that it falls off (is that worth doing?  seems like that's alright, it should intersect)
-        //TODO: make sure you don't specify overlap spots not on the boards
-
-        val c = a.overlay(b, ('b',2), ('a',2))
+        val c = a.overlay(b, ('b',2))
 
         assertEquals(c.size, 2)
         assertEquals(c('a', 1), 4)
@@ -332,21 +326,14 @@ class BoardTest {
 
     }
 
+    //can I overlay two arbitrary points?  It seems possible, just need to calculate the top left points for the big board and call the subroutine
+
     @Test(expected=classOf[AssertionError])
     def cannotOverlaySpotNotOnBigBoard() {
 
         val a = Board(3)
         val b = Board(2)
 
-        a.overlay(b, ('d',1), ('a',1))
-    }
-
-    @Test(expected=classOf[AssertionError])
-    def cannotOverlaySpotNotOnSmallBoard() {
-
-        val a = Board(3)
-        val b = Board(2)
-
-        a.overlay(b, ('a',1), ('c',1))
+        a.overlay(b, ('d',1))
     }
 }
