@@ -290,31 +290,8 @@ class BoardTest {
     }
 
 
-    /**
-     * This one is complicated.  Lets say I have a large board:
-     *
-     * [ ][2][ ] 3
-     * [ ][0][1] 2  3x3
-     * [6][2][3] 1
-     * a  b  c
-     *
-     * And I want to overlay on top of it a smaller board:
-     *
-     * [0][1] 2  2x2
-     * [2][4] 1
-     * a  b
-     *
-     * I have to declare what point is mapping to what point.
-     *
-     * So the big board b2 will map to the small board a2.  In the process of overlaying, the function will also take a joining function, like +, which will add points together
-     *
-     * [0][2] 2
-     * [4][7] 1
-     * a  b
-     *
-     */
     @Test
-    def shouldOverlay() {
+    def shouldOverlayCustom() {
 
         /*
          *
@@ -371,43 +348,57 @@ class BoardTest {
 
     }
 
+    /**
+     * This one is complicated.  Lets say I have a large board:
+     *
+     * [ ][2][ ] 3
+     * [ ][0][1] 2  3x3
+     * [6][2][3] 1
+     * a  b  c
+     *
+     * And I want to overlay on top of it a smaller board:
+     *
+     * [0][1] 2  2x2
+     * [2][4] 1
+     * a  b
+     *
+     * I have to declare what point is mapping to what point.
+     *
+     * So the big board b2 will map to the small board a2.  In the process of overlaying, the function will also take a joining function, like +, which will add points together
+     *
+     * [0][2] 2
+     * [4][7] 1
+     * a  b
+     *
+     */
     @Test
-    def shouldOverlayCustom() {
+    def shouldOverlay() {
 
-        /*
-         *
-         * [ ][ ][ ] 3
-         * [ ][0][0] 2  3x3
-         * [ ][2][2] 1
-         *  a  b  c
-         *
-         * And I want to overlay on top of it a smaller board:
-         *
-         * [3][3] 2  2x2
-         * [1][1] 1
-         *  a  b
-         */
         val a = Board(3).set(
+            ('a', 1) -> 6,
             ('b', 1) -> 2,
-            ('c', 1) -> 2,
+            ('c', 1) -> 3,
             ('b', 2) -> 0,
-            ('c', 2) -> 0
+            ('c', 2) -> 1,
+            ('b', 3) -> 3
         )
 
         val b = Board(2).set(
-            ('a', 1) -> 1,
-            ('b', 1) -> 1,
-            ('a', 2) -> 3,
-            ('b', 2) -> 3
+            ('a', 1) -> 2,
+            ('b', 1) -> 4,
+            ('a', 2) -> 0,
+            ('b', 2) -> 1
         )
 
-        val c = a.overlay(b, ('b', 2), (a, b) => scala.math.max(a,b))
+        val c = a.overlay(b, ('b', 2), (a, b) => a+b)
+
+        println(c)
 
         assertEquals(c.size, 2)
-        assertEquals(c('a', 1), 2)
-        assertEquals(c('b', 1), 2)
-        assertEquals(c('a', 2), 3)
-        assertEquals(c('b', 2), 3)
+        assertEquals(c('a', 1), 4)
+        assertEquals(c('b', 1), 7)
+        assertEquals(c('a', 2), 0)
+        assertEquals(c('b', 2), 2)
 
     }
 
