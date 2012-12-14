@@ -14,10 +14,11 @@ trait Board {
     def activeSpaces: Set[Tuple2[Char,Int]]
     def allSpaces: Set[Tuple2[Char,Int]]
     def crop(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]): Board
-    def overlay(otherBoard: Board, mySpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int) = {(i,j)=>i+j}): Board
+    def overlay(otherBoard: Board, mySpot: Tuple2[Char, Int], otherSpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int)): Board
     def contains(coords: Tuple2[Char, Int]): Boolean
     def isDefinedAt(coords: Tuple2[Char, Int]): Boolean
     def toMap: Map[Tuple2[Char, Int], Int]
+    def getTopLeftOffset(coords: Tuple2[Char, Int]): Tuple2[Int, Int]
 
     //Convenience Interface:
     def +(otherBoard: Board): Board = this.plus(otherBoard)
@@ -29,6 +30,9 @@ trait Board {
             case (b: Board, pair: Tuple2[Tuple2[Char, Int], Int]) =>
                 b.set(pair._1, pair._2)
         }
+    }
+    def overlay(otherBoard: Board, mySpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int)): Board = {
+        overlay(otherBoard, mySpot, ('a', otherBoard.size), joiner)
     }
 
     def apply(t: Tuple2[Char, Int]): Int = get(t) match {
@@ -82,10 +86,13 @@ object Board {
 
         override def filter(f: Tuple2[Tuple2[Char, Int], Int] => Boolean): Board = new BoardImpl(size, boardSpace.filter(f))
 
-        override def overlay(smallBoard: Board, mySpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int)): Board = {
+        override def overlay(smallBoard: Board, mySpot: Tuple2[Char, Int], otherSpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int)): Board = {
             assert(this.contains(mySpot), "Local board did not contain spot "+mySpot+", size is "+size)
+            val offset = smallBoard.getTopLeftOffset(otherSpot)
+            val myTopLeft = addOffset(mySpot, offset)
 
-            val cropped = this.crop(mySpot, bottomRightFor(mySpot, smallBoard.size))
+
+            val cropped = this.crop(myTopLeft, bottomRightFor(myTopLeft, smallBoard.size))
 
             cropped.merge(smallBoard, joiner)
         }
@@ -104,6 +111,10 @@ object Board {
             }
 
             new BoardImpl(size, spacesAsTuples.toMap)
+        }
+
+        override def getTopLeftOffset(coords: Tuple2[Char, Int]): Tuple2[Int, Int] = {
+            ('a'-coords._1, size-coords._2)
         }
 
         override def crop(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]): Board = {
@@ -147,6 +158,10 @@ object Board {
     def bottomRightFor(topLeft: Tuple2[Char, Int], size: Int): Tuple2[Char, Int] = {
         assert(topLeft._2 >= size, "Trying to find the bottom right without enough room: "+topLeft+" - "+size)
         ((topLeft._1 + size - 1).toChar, topLeft._2 - size + 1)
+    }
+
+    def addOffset(left: Tuple2[Char,Int], offset: Tuple2[Int, Int]): Tuple2[Char, Int] = {
+        ((left._1+offset._1).toChar, left._2+offset._2)
     }
 
     protected def assertValidZone(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]) {
