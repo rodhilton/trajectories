@@ -260,7 +260,7 @@ class BoardTest {
 
     @Test
     def canOffset() {
-        assertEquals(('d', 8), Board.addOffset(('f',5), (-2, 3)))
+        assertEquals(('d', 8), ('f',5) + (-2, 3))
     }
 
     @Test
@@ -391,8 +391,6 @@ class BoardTest {
         )
 
         val c = a.overlay(b, ('b', 2), (a, b) => a+b)
-
-        println(c)
 
         assertEquals(c.size, 2)
         assertEquals(c('a', 1), 4)
