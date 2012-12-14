@@ -1,4 +1,4 @@
-package com.nomachetejuggling.trajectories.board
+package com.nomachetejuggling.trajectories
 
 import org.junit.Test
 import org.junit.Assert._
