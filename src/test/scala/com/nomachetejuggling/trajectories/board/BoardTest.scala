@@ -249,6 +249,21 @@ class BoardTest {
     }
 
     @Test
+    def canGetTopLeftOffset() {
+        val b = Board(3)
+
+        assertEquals(b.getTopLeftOffset(('b',1)), (-1, 2))
+        assertEquals(b.getTopLeftOffset(('b',2)), (-1, 1))
+        assertEquals(b.getTopLeftOffset(('a',3)), (0, 0))
+        assertEquals(b.getTopLeftOffset(('c',1)), (-2, 2))
+    }
+
+    @Test
+    def canOffset() {
+        assertEquals(('d', 8), Board.addOffset(('f',5), (-2, 3)))
+    }
+
+    @Test
     def canCropTiny() {
         /*
         [4][3][2] 3
@@ -339,36 +354,62 @@ class BoardTest {
     }
 
     @Test
-    def shouldOverlayCustomOp() {
+    def shouldOverlayArbitrary() {
 
-        val a = Board(3).set(
-            ('b', 3) -> 2,
-            ('b', 2) -> 0,
-            ('c', 2) -> 1,
-            ('a', 1) -> 6,
-            ('b', 1) -> 2,
-            ('c', 1) -> 3
+        val a = Board(7).set(
+            ('d', 4) -> 6
         )
 
-        val b = Board(2).set(
-            ('a', 1) -> 2,
-            ('a', 2) -> 0,
-            ('b', 1) -> 4,
-            ('b', 2) -> 1
+        val b = Board(3).set(
+            ('b', 2) -> 4
         )
 
-        val c = a.overlay(b, ('b', 2))
+        val c = a.overlay(b, ('d', 4), ('b', 2), (i,j)=>i+j)
 
-        assertEquals(c.size, 2)
-        assertEquals(c('a', 1), 4)
-        assertEquals(c('a', 2), 0)
-        assertEquals(c('b', 1), 7)
-        assertEquals(c('b', 2), 2)
+        assertEquals(c.size, 3)
+        assertEquals(c('b', 2), 10)
 
     }
 
+    @Test
+    def shouldOverlayCustom() {
 
-    //can I overlay two arbitrary points?  It seems possible, just need to calculate the top left points for the big board and call the subroutine
+        /*
+         *
+         * [ ][ ][ ] 3
+         * [ ][0][0] 2  3x3
+         * [ ][2][2] 1
+         *  a  b  c
+         *
+         * And I want to overlay on top of it a smaller board:
+         *
+         * [3][3] 2  2x2
+         * [1][1] 1
+         *  a  b
+         */
+        val a = Board(3).set(
+            ('b', 1) -> 2,
+            ('c', 1) -> 2,
+            ('b', 2) -> 0,
+            ('c', 2) -> 0
+        )
+
+        val b = Board(2).set(
+            ('a', 1) -> 1,
+            ('b', 1) -> 1,
+            ('a', 2) -> 3,
+            ('b', 2) -> 3
+        )
+
+        val c = a.overlay(b, ('b', 2), (a, b) => scala.math.max(a,b))
+
+        assertEquals(c.size, 2)
+        assertEquals(c('a', 1), 2)
+        assertEquals(c('b', 1), 2)
+        assertEquals(c('a', 2), 3)
+        assertEquals(c('b', 2), 3)
+
+    }
 
     @Test(expected = classOf[AssertionError])
     def cannotOverlaySpotNotOnBigBoard() {
@@ -376,6 +417,6 @@ class BoardTest {
         val a = Board(3)
         val b = Board(2)
 
-        a.overlay(b, ('d', 1))
+        a.overlay(b, ('d', 1), (i,j)=>i+j)
     }
 }
