@@ -204,6 +204,41 @@ class BoardTest {
 
     }
 
+    @Test
+    def canCropOffset() {
+        /*
+        [7][8][9] 3
+        [4][5][6] 2
+        [1][2][3] 1
+         a  b  c
+         */
+        val a = Board(4).set(
+            ('a',1) -> 1,
+            ('b',1) -> 2,
+            ('c',1) -> 3,
+            ('a',2) -> 4,
+            ('b',2) -> 5,
+            ('c',2) -> 6,
+            ('a',3) -> 7,
+            ('b',3) -> 8,
+            ('c',3) -> 9
+        )
+
+        val croppedTopLeft = a.crop(('a', 3), ('b', 2))
+        val croppedTopRight = a.crop(('b', 3), ('c', 2))
+        val croppedBottomLeft = a.crop(('a', 2), ('b', 1))
+        val croppedBottomRight = a.crop(('b', 2), ('c', 1))
+
+        assertEquals(croppedTopLeft.size, 2)
+        assertEquals(croppedTopRight.size, 2)
+        assertEquals(croppedBottomLeft.size, 2)
+        assertEquals(croppedBottomRight.size, 2)
+
+        assertEquals(croppedTopLeft('a',1), 4)
+        assertEquals(croppedTopRight('a',1), 5)
+        assertEquals(croppedBottomLeft('a',1), 1)
+        assertEquals(croppedBottomRight('a',1), 2)
+    }
 
     @Test
     def canCropTiny() {
