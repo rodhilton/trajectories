@@ -40,12 +40,11 @@ class BoardTest {
     }
 
     @Test
-    def shouldManySet() {
-        val b = Board(5)
-        val b2 = b.set(('a', 3) -> 1).set(('b', 2) -> 2)
+    def shouldBeConvenient() {
+        val b = Board(5).set(('a', 3) -> 1, ('b', 2) -> 2)
 
-        assertEquals(b2('a', 3), 1)
-        assertEquals(b2('b', 2), 2)
+        assertEquals(b('a', 3), 1)
+        assertEquals(b('b', 2), 2)
     }
 
     @Test
