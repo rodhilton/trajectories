@@ -8,6 +8,7 @@ trait Board {
     def set(coordinates: Tuple2[Char, Int], value: Int): Board
     def get(coordinates: Tuple2[Char, Int]): Option[Int]
     def plus(otherBoard: Board): Board
+    def merge(otherBoard: Board, joiner: ((Int, Int)=>Int) ): Board
     def intersect(otherBoard: Board): Board
     def filter(f: Tuple2[Tuple2[Char, Int], Int] => Boolean): Board
     def activeSpaces: Set[Tuple2[Char,Int]]
@@ -60,25 +61,13 @@ object Board {
         override def get(coordinates: Tuple2[Char, Int]): Option[Int] = boardSpace.get(coordinates)
 
         override def plus(otherBoard: Board): Board = {
-            assert(size == otherBoard.size, "Tried to add two boards of unequal size. Me: "+size+", other: "+otherBoard.size)
-
-            val spacesAsTuples = ( activeSpaces ++ otherBoard.activeSpaces).map {
-                coords =>
-                    (this.get(coords), otherBoard.get(coords)) match {
-                        case (Some(left), Some(right)) => coords->(left+right)
-                        case (Some(left), None) => coords->left
-                        case (None, Some(right)) => coords->right
-                        case (None, None) => throw new Exception("This can't happen, each space has to be in one of the two maps")
-                    }
-            }
-
-            new BoardImpl(size, spacesAsTuples.toMap)
+            merge(otherBoard, (i, j)=>i+j)
         }
 
         override def intersect(otherBoard: Board): Board = {
             assert(size == otherBoard.size)
 
-            //TODO: get rid of this ugly duplication from plus()
+            //TODO: get rid of this ugly duplication from merge()
             val spacesAsTuples = ( activeSpaces & otherBoard.activeSpaces).map {
                 coords => coords -> scala.math.max(this(coords), otherBoard(coords))
             }
@@ -96,16 +85,30 @@ object Board {
         override def overlay(smallBoard: Board, mySpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int)): Board = {
             assert(this.contains(mySpot), "Local board did not contain spot "+mySpot+", size is "+size)
 
-
             val cropped = this.crop(mySpot, bottomRightFor(mySpot, smallBoard.size))
 
-            cropped.plus(smallBoard)
+            cropped.merge(smallBoard, joiner)
+        }
+
+        override def merge(otherBoard: Board, joiner: ((Int, Int)=>Int)): Board = {
+            assert(size == otherBoard.size, "Tried to merge two boards of unequal size. Me: "+size+", other: "+otherBoard.size)
+
+            val spacesAsTuples = ( activeSpaces ++ otherBoard.activeSpaces).map {
+                coords =>
+                    (this.get(coords), otherBoard.get(coords)) match {
+                        case (Some(left), Some(right)) => coords->joiner(left,right)
+                        case (Some(left), None) => coords->joiner(left,0)
+                        case (None, Some(right)) => coords->joiner(right,0)
+                        case (None, None) => throw new Exception("This can't happen, each space has to be in one of the two maps")
+                    }
+            }
+
+            new BoardImpl(size, spacesAsTuples.toMap)
         }
 
         override def crop(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]): Board = {
             assert(this.contains(topLeft) && this.contains(bottomRight), "Asked to crop from "+topLeft+" to "+bottomRight+", but my size is "+size)
             assertValidZone(topLeft, bottomRight)
-
 
             //Remove everything outside of our bounds, leaving only the correct elements (with the wrong indexes)
             val inside = insideBounds(topLeft, bottomRight, _: (Char, Int))
