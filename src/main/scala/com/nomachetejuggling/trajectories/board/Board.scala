@@ -48,6 +48,11 @@ object Board {
         (topLeft._1 to bottomRight._1).contains(coordsToCheck._1) && (bottomRight._2 to topLeft._2).contains(coordsToCheck._2)
     }
 
+    def bottomRightFor(topLeft: Tuple2[Char, Int], size: Int): Tuple2[Char, Int] = {
+        assert(topLeft._2 >= size, "Trying to find the bottom right without enough room: "+topLeft+" - "+size)
+        ((topLeft._1 + size - 1).toChar, topLeft._2 - size + 1)
+    }
+
     protected def assertValidZone(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]) {
         //This looks reversed because the numbers start at the bottom but the letters start on the right
         assert(bottomRight._1 >= topLeft._1 && topLeft._2 >= bottomRight._2, "Crop coordinates not valid: "+topLeft+" to "+bottomRight)
@@ -123,9 +128,7 @@ object Board {
             //Remove everything outside of our bounds, leaving only the correct elements (with the wrong indexes)
             val inside = insideBounds(topLeft, bottomRight, _: (Char, Int))
 
-            val filteredBoard = this.filter{ case (coords, value) =>
-                inside(coords)
-            }
+            val filteredBoard = this.filter{ case (coords, value) => inside(coords) }
 
             val offsetMap = filteredBoard.toMap.collect{ case ((col, row), value) =>
                 (((col-topLeft._1)+'a'.toInt).toChar, row-bottomRight._2+1) -> value
@@ -151,5 +154,3 @@ object Board {
     }
 
 }
-
-class Space
