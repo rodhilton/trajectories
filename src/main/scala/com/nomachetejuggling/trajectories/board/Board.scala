@@ -1,6 +1,5 @@
 package com.nomachetejuggling.trajectories.board
 
-import collection.immutable.IndexedSeq
 import java.util.NoSuchElementException
 
 trait Board {
@@ -14,7 +13,7 @@ trait Board {
     def activeSpaces: Set[Tuple2[Char,Int]]
     def allSpaces: Set[Tuple2[Char,Int]]
     def crop(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]): Board
-    def overlay(otherBoard: Board, mySpot: Tuple2[Char, Int], otherSpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int) = {(i,j)=>i+j}): Board
+    def overlay(otherBoard: Board, mySpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int) = {(i,j)=>i+j}): Board
     def contains(coords: Tuple2[Char, Int]): Boolean
     def isDefinedAt(coords: Tuple2[Char, Int]): Boolean
     def toMap: Map[Tuple2[Char, Int], Int]
@@ -43,22 +42,6 @@ trait Board {
 object Board {
     def apply(size: Int): Board = new BoardImpl(size, Map.empty)
 
-    def insideBounds(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int], coordsToCheck: Tuple2[Char, Int]): Boolean = {
-        assertValidZone(topLeft, bottomRight)
-        (topLeft._1 to bottomRight._1).contains(coordsToCheck._1) && (bottomRight._2 to topLeft._2).contains(coordsToCheck._2)
-    }
-
-    def bottomRightFor(topLeft: Tuple2[Char, Int], size: Int): Tuple2[Char, Int] = {
-        assert(topLeft._2 >= size, "Trying to find the bottom right without enough room: "+topLeft+" - "+size)
-        ((topLeft._1 + size - 1).toChar, topLeft._2 - size + 1)
-    }
-
-    protected def assertValidZone(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]) {
-        //This looks reversed because the numbers start at the bottom but the letters start on the right
-        assert(bottomRight._1 >= topLeft._1 && topLeft._2 >= bottomRight._2, "Crop coordinates not valid: "+topLeft+" to "+bottomRight)
-        assert(bottomRight._1 - topLeft._1 == topLeft._2 - bottomRight._2, "Asked to crop to a nonsquare: "+(bottomRight._1 - topLeft._1)+"x"+(topLeft._2 - bottomRight._2))
-    }
-
     //TODO: figure out why I can't do this
     //def apply(size: Int, pairs: Tuple2[Tuple2[Char, Int], Int]*): Board = Board(size).set(pairs)
 
@@ -69,7 +52,10 @@ object Board {
 
         override lazy val toMap: Map[Tuple2[Char, Int], Int] = boardSpace
 
-        override def set(coordinates: Tuple2[Char, Int], value: Int): Board = new BoardImpl(size, boardSpace.updated(coordinates, value))
+        override def set(coordinates: Tuple2[Char, Int], value: Int): Board = {
+            assert(insideBounds((columns.first, size), (columns.last, 1), coordinates), "Tried to set outside of bounds: "+coordinates+", but size is "+size)
+            new BoardImpl(size, boardSpace.updated(coordinates, value))
+        }
 
         override def get(coordinates: Tuple2[Char, Int]): Option[Int] = boardSpace.get(coordinates)
 
@@ -107,17 +93,13 @@ object Board {
 
         override def filter(f: Tuple2[Tuple2[Char, Int], Int] => Boolean): Board = new BoardImpl(size, boardSpace.filter(f))
 
-        override def overlay(smallBoard: Board, mySpot: Tuple2[Char, Int], otherSpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int)): Board = {
+        override def overlay(smallBoard: Board, mySpot: Tuple2[Char, Int], joiner: ((Int, Int)=>Int)): Board = {
             assert(this.contains(mySpot), "Local board did not contain spot "+mySpot+", size is "+size)
-            assert(smallBoard.contains(otherSpot), "Other board did not contain spot "+otherSpot+", size is "+smallBoard.size)
-
-            val colOffset = otherSpot._1 - mySpot._1
-            val rowOffset = otherSpot._2 - mySpot._2
 
 
+            val cropped = this.crop(mySpot, bottomRightFor(mySpot, smallBoard.size))
 
-            this
-
+            cropped.plus(smallBoard)
         }
 
         override def crop(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]): Board = {
@@ -151,6 +133,23 @@ object Board {
             rowStrings.mkString("\n") + "\n" + columns.map(c => " " + c + " ").mkString("")
         }
 
+    }
+
+    //Helper methods on Board
+    def insideBounds(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int], coordsToCheck: Tuple2[Char, Int]): Boolean = {
+        assertValidZone(topLeft, bottomRight)
+        (topLeft._1 to bottomRight._1).contains(coordsToCheck._1) && (bottomRight._2 to topLeft._2).contains(coordsToCheck._2)
+    }
+
+    def bottomRightFor(topLeft: Tuple2[Char, Int], size: Int): Tuple2[Char, Int] = {
+        assert(topLeft._2 >= size, "Trying to find the bottom right without enough room: "+topLeft+" - "+size)
+        ((topLeft._1 + size - 1).toChar, topLeft._2 - size + 1)
+    }
+
+    protected def assertValidZone(topLeft: Tuple2[Char, Int], bottomRight: Tuple2[Char, Int]) {
+        //This looks reversed because the numbers start at the bottom but the letters start on the right
+        assert(bottomRight._1 >= topLeft._1 && topLeft._2 >= bottomRight._2, "Crop coordinates not valid: "+topLeft+" to "+bottomRight)
+        assert(bottomRight._1 - topLeft._1 == topLeft._2 - bottomRight._2, "Asked to crop to a nonsquare: "+(bottomRight._1 - topLeft._1)+"x"+(topLeft._2 - bottomRight._2))
     }
 
 }
