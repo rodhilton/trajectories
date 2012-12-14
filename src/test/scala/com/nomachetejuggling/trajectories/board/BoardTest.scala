@@ -152,7 +152,7 @@ class BoardTest {
 
     @Test
     def shouldCheckForBoundaryRestrictions() {
-        val partial = Board.insideBounds(('b', 3), ('c', 2), _: Tuple2[Char, Int])
+        val partial = (('b', 3) to ('c', 2)).contains(_: Tuple2[Char, Int])
 
         assertFalse(partial(('a', 4)))
         assertFalse(partial(('a', 3)))
@@ -177,9 +177,10 @@ class BoardTest {
 
     @Test
     def shouldCalculateBoundaries() {
-        assertEquals(('c', 2), Board.bottomRightFor(('b', 3), 2))
-        assertEquals(('b', 3), Board.bottomRightFor(('b', 3), 1))
-        assertEquals(('d', 1), Board.bottomRightFor(('b', 3), 3))
+        //These look weird, but it's because we cound up from the left, but also up from the bottom.
+        assertEquals(('c', 2), ('b', 3) + 2)
+        assertEquals(('b', 3), ('b', 3) + 1)
+        assertEquals(('d', 1), ('b', 3) + 3)
     }
 
     @Test

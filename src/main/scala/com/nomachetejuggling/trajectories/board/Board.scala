@@ -13,7 +13,7 @@ trait Board {
     def filter(f: ((Coordinates, Int)) => Boolean): Board
     def activeSpaces: Set[Coordinates]
     def allSpaces: Set[Coordinates]
-    def crop(topLeft: Coordinates, bottomRight: Coordinates): Board
+    def crop(area: Area): Board
     def overlay(otherBoard: Board, mySpot: Coordinates, otherSpot: Coordinates, joiner: ((Int, Int)=>Int)): Board
     def contains(coords: Coordinates): Boolean
     def isDefinedAt(coords: Coordinates): Boolean
@@ -57,16 +57,12 @@ object Board {
         override lazy val toMap: Map[Coordinates, Int] = boardSpace
 
         override def set(coordinates: Coordinates, value: Int): Board = {
-            assert(insideBounds((columns.head, size), (columns.last, 1), coordinates), "Tried to set outside of bounds: "+coordinates+", but size is "+size)
+            assert((columns.head, size) to (columns.last, 1) contains coordinates, "Tried to set outside of bounds: "+coordinates+", but size is "+size)
             new BoardImpl(size, boardSpace.updated(coordinates, value))
         }
 
         override def get(coordinates: Coordinates): Option[Int] = boardSpace.get(coordinates)
-
-        override def plus(otherBoard: Board): Board = {
-            merge(otherBoard, (i, j)=>i+j)
-        }
-
+        override def plus(otherBoard: Board): Board = merge(otherBoard, (i, j)=>i+j)
         override def intersect(otherBoard: Board): Board = {
             assert(size == otherBoard.size)
 
@@ -77,20 +73,18 @@ object Board {
             new BoardImpl(size, spacesAsTuples.toMap)
         }
 
-        def contains(coords: Coordinates): Boolean = columns.contains(coords._1) && rows.contains(coords._2)
-        def isDefinedAt(coords: Coordinates): Boolean = this.boardSpace.isDefinedAt(coords)
-
+        override def contains(coords: Coordinates): Boolean = columns.contains(coords.col) && rows.contains(coords.row)
+        override def isDefinedAt(coords: Coordinates): Boolean = this.boardSpace.isDefinedAt(coords)
         override def activeSpaces: Set[Coordinates] = boardSpace.keySet
-
         override def filter(f: ((Coordinates, Int)) => Boolean): Board = new BoardImpl(size, boardSpace.filter(f))
 
         override def overlay(smallBoard: Board, mySpot: Coordinates, otherSpot: Coordinates, joiner: ((Int, Int)=>Int)): Board = {
-            assert(this.contains(mySpot), "Local board did not contain spot "+mySpot+", size is "+size)
+            assert(contains(mySpot), "Local board did not contain spot "+mySpot+", size is "+size)
+
             val offset = smallBoard.getTopLeftOffset(otherSpot)
             val myTopLeft = mySpot + offset
 
-
-            val cropped = this.crop(myTopLeft, bottomRightFor(myTopLeft, smallBoard.size))
+            val cropped = crop(myTopLeft to (myTopLeft + smallBoard.size))
 
             cropped.merge(smallBoard, joiner)
         }
@@ -112,23 +106,23 @@ object Board {
         }
 
         override def getTopLeftOffset(coords: Coordinates): (Int, Int) = {
-            ('a'-coords._1, size-coords._2)
+            ('a'-coords.col, size-coords.row)
         }
 
-        override def crop(topLeft: Coordinates, bottomRight: Coordinates): Board = {
-            assert(this.contains(topLeft) && this.contains(bottomRight), "Asked to crop from "+topLeft+" to "+bottomRight+", but my size is "+size)
-            assertValidZone(topLeft, bottomRight)
+        override def crop(area: Area): Board = {
+            assert(contains(area.topLeft) && contains(area.bottomRight), "Asked to crop from " + area.topLeft +" to " + area.bottomRight +", but my size is "+size)
+            assert((area.topLeft to area.bottomRight).isValid, "Area given is not valid: "+area.toString())
 
             //Remove everything outside of our bounds, leaving only the correct elements (with the wrong indexes)
-            val inside = insideBounds(topLeft, bottomRight, _: (Char, Int))
+            val filteredBoard = this.filter{ case (coords, value) => area.contains(coords) }
 
-            val filteredBoard = this.filter{ case (coords, value) => inside(coords) }
-
+            //Now fix the indexes
             val offsetMap = filteredBoard.toMap.collect{ case ((col, row), value) =>
-                (((col-topLeft._1)+'a'.toInt).toChar, row-bottomRight._2+1) -> value
+                //TODO: there should be a way to make this cleaner with all the ops now
+                (((col - area.topLeft.col)+'a'.toInt).toChar, row - area.bottomRight.row+1) -> value
             }
 
-            new BoardImpl(topLeft._2 - bottomRight._2 + 1, offsetMap)
+            new BoardImpl(area.topLeft.row - area.bottomRight.row + 1, offsetMap)
         }
 
         override def toString() = {
@@ -146,21 +140,4 @@ object Board {
         }
 
     }
-
-    //Helper methods on Board
-    def insideBounds(topLeft: Coordinates, bottomRight: Coordinates, coordsToCheck: Coordinates): Boolean = {
-        assertValidZone(topLeft, bottomRight)
-        (topLeft._1 to bottomRight._1).contains(coordsToCheck._1) && (bottomRight._2 to topLeft._2).contains(coordsToCheck._2)
-    }
-
-    def bottomRightFor(topLeft: Coordinates, size: Int): Coordinates = {
-        assert(topLeft._2 >= size, "Trying to find the bottom right without enough room: "+topLeft+" - "+size)
-        ((topLeft._1 + size - 1).toChar, topLeft._2 - size + 1)
-    }
-    protected def assertValidZone(topLeft: Coordinates, bottomRight: Coordinates) {
-        //This looks reversed because the numbers start at the bottom but the letters start on the right
-        assert(bottomRight._1 >= topLeft._1 && topLeft._2 >= bottomRight._2, "Crop coordinates not valid: "+topLeft+" to "+bottomRight)
-        assert(bottomRight._1 - topLeft._1 == topLeft._2 - bottomRight._2, "Asked to crop to a nonsquare: "+(bottomRight._1 - topLeft._1)+"x"+(topLeft._2 - bottomRight._2))
-    }
-
 }
