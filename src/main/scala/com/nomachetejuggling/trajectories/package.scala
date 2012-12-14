@@ -1,6 +1,6 @@
-package com.nomachetejuggling.trajectories
+package com.nomachetejuggling
 
-package object board {
+package object trajectories {
     type Coordinates = Tuple2[Char, Int]
     type Area = (Coordinates, Coordinates)
 
@@ -32,6 +32,8 @@ package object board {
             assert(area.isValid, "Area is not valid: "+area)
             area
         }
+
+        lazy val asNumeric: (Int, Int) = (column-'a'+1, row)
     }
 
     class AreaOps(area: Area) {
