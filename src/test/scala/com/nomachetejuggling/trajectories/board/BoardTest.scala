@@ -151,39 +151,6 @@ class BoardTest {
     }
 
     @Test
-    def shouldCheckForBoundaryRestrictions() {
-        val partial = (('b', 3) to ('c', 2)).contains(_: Tuple2[Char, Int])
-
-        assertFalse(partial(('a', 4)))
-        assertFalse(partial(('a', 3)))
-        assertFalse(partial(('a', 2)))
-        assertFalse(partial(('a', 1)))
-
-        assertFalse(partial(('b', 4)))
-        assertTrue(partial(('b', 3)))
-        assertTrue(partial(('b', 2)))
-        assertFalse(partial(('b', 1)))
-
-        assertFalse(partial(('c', 4)))
-        assertTrue(partial(('c', 3)))
-        assertTrue(partial(('c', 2)))
-        assertFalse(partial(('c', 1)))
-
-        assertFalse(partial(('d', 4)))
-        assertFalse(partial(('d', 3)))
-        assertFalse(partial(('d', 2)))
-        assertFalse(partial(('d', 1)))
-    }
-
-    @Test
-    def shouldCalculateBoundaries() {
-        //These look weird, but it's because we cound up from the left, but also up from the bottom.
-        assertEquals(('c', 2), ('b', 3) + 2)
-        assertEquals(('b', 3), ('b', 3) + 1)
-        assertEquals(('d', 1), ('b', 3) + 3)
-    }
-
-    @Test
     def canCrop() {
         /*
         [ ][6][ ][ ] 4
@@ -259,10 +226,6 @@ class BoardTest {
         assertEquals(b.getTopLeftOffset(('c',1)), (-2, 2))
     }
 
-    @Test
-    def canOffset() {
-        assertEquals(('d', 8), ('f',5) + (-2, 3))
-    }
 
     @Test
     def canCropTiny() {

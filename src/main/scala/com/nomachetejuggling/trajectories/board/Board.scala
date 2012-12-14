@@ -21,10 +21,10 @@ trait Board {
     def getTopLeftOffset(coords: Coordinates): (Int, Int)
 
     //Convenience Interface:
-    def +(otherBoard: Board): Board = this.plus(otherBoard)
-    def &(otherBoard: Board): Board = this.intersect(otherBoard)
-    def contains(c:Char, i:Int): Boolean = this.contains((c,i))
-    def isDefinedAt(c:Char, i:Int): Boolean = this.isDefinedAt((c,i))
+    def +(otherBoard: Board): Board = plus(otherBoard)
+    def &(otherBoard: Board): Board = intersect(otherBoard)
+    def contains(c:Char, i:Int): Boolean = contains((c,i))
+    def isDefinedAt(c:Char, i:Int): Boolean = isDefinedAt((c,i))
     def set(pairs: (Coordinates, Int)*): Board = {
         pairs.foldLeft(this) {
             (b: Board, pair: (Coordinates, Int)) => b.set(pair._1, pair._2)
@@ -74,7 +74,7 @@ object Board {
         }
 
         override def contains(coords: Coordinates): Boolean = columns.contains(coords.col) && rows.contains(coords.row)
-        override def isDefinedAt(coords: Coordinates): Boolean = this.boardSpace.isDefinedAt(coords)
+        override def isDefinedAt(coords: Coordinates): Boolean = boardSpace.isDefinedAt(coords)
         override def activeSpaces: Set[Coordinates] = boardSpace.keySet
         override def filter(f: ((Coordinates, Int)) => Boolean): Board = new BoardImpl(size, boardSpace.filter(f))
 
@@ -94,7 +94,7 @@ object Board {
 
             val spacesAsTuples = ( activeSpaces ++ otherBoard.activeSpaces).map {
                 coords =>
-                    (this.get(coords), otherBoard.get(coords)) match {
+                    (get(coords), otherBoard.get(coords)) match {
                         case (Some(left), Some(right)) => coords->joiner(left,right)
                         case (Some(left), None) => coords->joiner(left,0)
                         case (None, Some(right)) => coords->joiner(right,0)
@@ -114,12 +114,12 @@ object Board {
             assert((area.topLeft to area.bottomRight).isValid, "Area given is not valid: "+area.toString())
 
             //Remove everything outside of our bounds, leaving only the correct elements (with the wrong indexes)
-            val filteredBoard = this.filter{ case (coords, value) => area.contains(coords) }
+            val filteredBoard = filter{ case (coords, value) => area.contains(coords) }
 
             //Now fix the indexes
-            val offsetMap = filteredBoard.toMap.collect{ case ((col, row), value) =>
-                //TODO: there should be a way to make this cleaner with all the ops now
-                (((col - area.topLeft.col)+'a'.toInt).toChar, row - area.bottomRight.row+1) -> value
+            val offset = (-area.topLeft.col+'a'.toInt, -area.bottomRight.row+1)
+            val offsetMap = filteredBoard.toMap.collect{
+                case (coords, value) => coords + offset -> value
             }
 
             new BoardImpl(area.topLeft.row - area.bottomRight.row + 1, offsetMap)
