@@ -3,10 +3,12 @@ package com.nomachetejuggling.trajectories.board
 import java.util.NoSuchElementException
 
 trait Board {
+    type Coordinates = Tuple2[Char, Int]
+
     val size: Int
 
-    def set(coordinates: Tuple2[Char, Int], value: Int): Board
-    def get(coordinates: Tuple2[Char, Int]): Option[Int]
+    def set(coordinates: Coordinates, value: Int): Board
+    def get(coordinates: Coordinates): Option[Int]
     def plus(otherBoard: Board): Board
     def merge(otherBoard: Board, joiner: ((Int, Int)=>Int) ): Board
     def intersect(otherBoard: Board): Board
