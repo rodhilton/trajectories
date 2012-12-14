@@ -175,6 +175,13 @@ class BoardTest {
     }
 
     @Test
+    def shouldCalculateBoundaries() {
+        assertEquals( ('c', 2), Board.bottomRightFor(('b',3), 2))
+        assertEquals( ('b', 3), Board.bottomRightFor(('b',3), 1))
+        assertEquals( ('d', 1), Board.bottomRightFor(('b',3), 3))
+    }
+
+    @Test
     def canCrop() {
         /*
         [ ][6][ ][ ] 4
