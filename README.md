@@ -77,7 +77,7 @@ Shortest path is 3 moves
 This outputs a single path, one of the many that are equal.  We can add the -a or --all parameter to have the program print all such paths.  It will only graph one (at random), but it will print all of them as a list.
 
 ```
-ir0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d d4 --all
+air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d d4 --all
 Number of shortest trajectories from a4 to d4: 7
 Here's one of them: 
 
@@ -100,4 +100,35 @@ a4->b4->c3->d4
 a4->b4->c4->d4
 
 Shortest path is 3 moves
+```
+
+This program supports multiple types of pieces including king, queen, bishop, knight, rook, pawn.  It also supports a 'weird' piece, but more on that later.
+
+Let's see how paths look for each of the different types.  Let's generate a queen's path from b4 to f6.
+
+```
+Number of shortest trajectories from b4 to f6: 9
+Here's one of them: 
+
+[ ][ ][ ][ ][ ][1][ ][ ]  8
+[ ][ ][ ][ ][ ][ ][ ][ ]  7
+[ ][ ][ ][ ][ ][2][ ][ ]  6
+[ ][ ][ ][ ][ ][ ][ ][ ]  5
+[ ][0][ ][ ][ ][ ][ ][ ]  4
+[ ][ ][ ][ ][ ][ ][ ][ ]  3
+[ ][ ][ ][ ][ ][ ][ ][ ]  2
+[ ][ ][ ][ ][ ][ ][ ][ ]  1
+ a  b  c  d  e  f  g  h 
+
+b4->d4->f6
+b4->c3->f6
+b4->e7->f6
+b4->b2->f6
+b4->d6->f6
+b4->b6->f6
+b4->h4->f6
+b4->f8->f6
+b4->f4->f6
+
+Shortest path is 2 moves
 ```
