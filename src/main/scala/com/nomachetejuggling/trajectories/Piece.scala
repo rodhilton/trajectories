@@ -1,5 +1,7 @@
 package com.nomachetejuggling.trajectories
 
+import annotation.tailrec
+
 case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {
 
     def bigTable(size: Int=15): Board = {
@@ -10,7 +12,8 @@ case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {
         calculateMovesForBoard(startBoard, 0)
     }
 
-    def calculateMovesForBoard(board: Board, startPosition: Int=0): Board = {
+    @tailrec
+    final def calculateMovesForBoard(board: Board, startPosition: Int=0): Board = {
         val positions: Set[Coordinates] = board.filter {
             case (coords: Coordinates, v: Int) => v == startPosition
         }.activeSpaces
