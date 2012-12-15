@@ -113,6 +113,23 @@ class PiecesTest {
     }
 
     @Test
+    def shouldGenerateCorrectBoardForWeird() {
+        //[2][2][2][3][2][3][2]  7
+        //[3][2][2][2][2][2][2]  6
+        //[2][2][1][1][1][2][2]  5
+        //[2][2][1][0][1][2][2]  4
+        //[2][2][1][1][1][2][2]  3
+        //[3][2][2][2][2][2][2]  2
+        //[2][2][2][3][2][3][2]  1
+        // a  b  c  d  e  f  g
+        val table: Board = Pieces.weird.bigTable(7)
+
+        assertEquals(table('d',4), 0)
+        assertEquals(table('a',2), 3)
+        assertEquals(table('g',2), 2)
+    }
+
+    @Test
     def shouldGenerateForArbitraryBoards() {
         //[0][1][2][1][0]  5
         //[1][1][2][1][1]  4

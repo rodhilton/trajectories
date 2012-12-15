@@ -1,6 +1,9 @@
-package com.nomachetejuggling.trajectories
+package com.nomachetejuggling.trajectories.main
 
 import org.apache.commons.cli.{Option => Opt, _}
+import com.nomachetejuggling.trajectories._
+import scala.Some
+import com.nomachetejuggling.trajectories.Piece
 
 object Main {
     def main(args: Array[String]) {

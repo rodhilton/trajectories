@@ -181,20 +181,23 @@ object Board {
         }
 
         override lazy val toString = {
+            val max = values.max
+            val spaceWidth = max.toString.size
+
             val rowStrings = for {
                 row <- rows
                 rowString = columns.map(col =>
                     boardSpace.get((col, row)) match {
-                        case Some(x) => "[" + "%2d".format(x) + "]"
+                        case Some(x) => "[" + ("%"+spaceWidth+"d").format(x) + "]"
                         case None => {
-                            if (illegalSpaces.contains((col,row))) "[##]"
-                            else "[  ]"
+                            if (illegalSpaces.contains((col,row))) "[" + ("#"*spaceWidth) +"]"
+                            else "[" + (" "*spaceWidth) +"]"
                         }
                     }
                 )
             } yield rowString.mkString("") + "  " + row
 
-            rowStrings.mkString("\n") + "\n" + columns.map(c => "  " + c + " ").mkString("")
+            rowStrings.mkString("\n") + "\n" + columns.map(c => (" "*spaceWidth) + c + " ").mkString("")
         }
 
     }
