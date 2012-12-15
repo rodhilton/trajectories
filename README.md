@@ -26,7 +26,29 @@ usage: trajectories
  -i,--illegal <arg>   Input spaces that are illegal separated by commas
                       (a2,b3,e6)
  -p,--piece <arg>     The piece to use (pawn, king, queen, knight, bishop,
-                      rook, weird
+                      rook, weird)
  -s,--start <arg>     The space to start (a1, b6, ...)
  -z,--size <arg>      Size of the board (must be <= 26)
- ```
+```
+
+Examples
+========
+
+Let's start simply, with a standard chess board in which we must move a king at a4 to c6.
+
+```
+air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d c6
+[ ][ ][ ][ ][ ][ ][ ][ ]  8
+[ ][ ][ ][ ][ ][ ][ ][ ]  7
+[ ][ ][2][ ][ ][ ][ ][ ]  6
+[ ][1][ ][ ][ ][ ][ ][ ]  5
+[0][ ][ ][ ][ ][ ][ ][ ]  4
+[ ][ ][ ][ ][ ][ ][ ][ ]  3
+[ ][ ][ ][ ][ ][ ][ ][ ]  2
+[ ][ ][ ][ ][ ][ ][ ][ ]  1
+ a  b  c  d  e  f  g  h 
+
+a4->b5->c6
+
+Shortest path is 2 moves
+```
