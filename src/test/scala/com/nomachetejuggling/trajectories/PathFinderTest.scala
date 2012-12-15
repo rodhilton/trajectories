@@ -1,6 +1,6 @@
 package com.nomachetejuggling.trajectories
 
-import org.junit.Test
+import org.junit.{Ignore, Test}
 import org.junit.Assert._
 
 class PathFinderTest {
@@ -74,6 +74,7 @@ class PathFinderTest {
     }
 
     @Test
+    @Ignore("This test takes a really long time")
     def shouldPathForMassivePaths() {
         val pathFinder = new PathFinder(Pieces.king)
 

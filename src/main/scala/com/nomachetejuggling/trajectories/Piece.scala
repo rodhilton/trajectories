@@ -28,7 +28,7 @@ case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {
 
         val canMoveTo = for {
             position <- positions
-            possible <- (board.allSpaces -- board.activeSpaces) if isValid(position, possible)
+            possible <- (board.legalSpaces -- board.activeSpaces) if isValid(position, possible)
         } yield (possible, startPosition + 1)
 
         if (canMoveTo.isEmpty)

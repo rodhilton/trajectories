@@ -12,6 +12,7 @@ class PathFinder(piece: Piece) {
         sum.filterWhere(v=>v==shortestPathLength)
     }
 
+    //TODO: some ugly duplication here with getPaths, but they ARE fundamentally different...
     def getPath(implicit board: Board, start: Coordinates, end: Coordinates): Path = {
         val sum = getSum(board, start, end)
 
@@ -67,6 +68,8 @@ class PathFinder(piece: Piece) {
 }
 
 case class Path(coordsList: List[Coordinates])(implicit board: Board) {
+
+    lazy val size = coordsList.size
 
     override def toString: String = {
         coordsList.reverse.map((c:Coordinates)=>(c.col+""+c.row)).mkString("->")
