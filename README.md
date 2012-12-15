@@ -52,3 +52,52 @@ a4->b5->c6
 
 Shortest path is 2 moves
 ```
+
+As you can imagine, there is only one shortest path from a4 to c6, which is printed out in ASCII.  0 marks the starting point, while 2 marks the destination because it takes 2 moves to get there.
+
+Let's make things a bit more complicated and do a trajectory with multiple equal paths.   We'll go from a4 to d4.
+
+```
+air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d d4
+[ ][ ][ ][ ][ ][ ][ ][ ]  8
+[ ][ ][ ][ ][ ][ ][ ][ ]  7
+[ ][ ][ ][ ][ ][ ][ ][ ]  6
+[ ][1][ ][ ][ ][ ][ ][ ]  5
+[0][ ][2][3][ ][ ][ ][ ]  4
+[ ][ ][ ][ ][ ][ ][ ][ ]  3
+[ ][ ][ ][ ][ ][ ][ ][ ]  2
+[ ][ ][ ][ ][ ][ ][ ][ ]  1
+ a  b  c  d  e  f  g  h 
+
+a4->b5->c4->d4
+
+Shortest path is 3 moves
+```
+
+This outputs a single path, one of the many that are equal.  We can add the -a or --all parameter to have the program print all such paths.  It will only graph one (at random), but it will print all of them as a list.
+
+```
+ir0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d d4 --all
+Number of shortest trajectories from a4 to d4: 7
+Here's one of them: 
+
+[ ][ ][ ][ ][ ][ ][ ][ ]  8
+[ ][ ][ ][ ][ ][ ][ ][ ]  7
+[ ][ ][ ][ ][ ][ ][ ][ ]  6
+[ ][ ][ ][ ][ ][ ][ ][ ]  5
+[0][1][2][3][ ][ ][ ][ ]  4
+[ ][ ][ ][ ][ ][ ][ ][ ]  3
+[ ][ ][ ][ ][ ][ ][ ][ ]  2
+[ ][ ][ ][ ][ ][ ][ ][ ]  1
+ a  b  c  d  e  f  g  h 
+
+a4->b3->c3->d4
+a4->b3->c4->d4
+a4->b5->c5->d4
+a4->b5->c4->d4
+a4->b4->c5->d4
+a4->b4->c3->d4
+a4->b4->c4->d4
+
+Shortest path is 3 moves
+```
