@@ -12,6 +12,7 @@ dependencies {
 
     // Scala standard library
     compile 'org.scala-lang:scala-library:2.9.1'
+    compile 'org.scalaz:scalaz-core_2.9.1:6.0.4'
 
     testCompile 'junit:junit:4.10'
 }

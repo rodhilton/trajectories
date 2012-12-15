@@ -19,33 +19,60 @@ class PathFinder(piece: Piece) {
 
         var current = start
         while(current!= end) {
-            val indexed = thePath.zipWithIndex
-            val hmm = indexed.foldLeft(sum){
-                case (sumBoard: Board, (prevCoords: Coordinates, prevIndex: Int)) => {
-                    val st=piece.st(board, prevCoords, prevIndex + 1)
-                    st intersect sumBoard
-                }
-            }
+            val moves = possibleMoves(thePath, sum, board)
 
-            val selectedSpace = util.Random.shuffle(hmm.activeSpaces.toList).head
+            val selectedSpace = util.Random.shuffle(moves.toList).head
             thePath = selectedSpace :: thePath
             current = selectedSpace
         }
 
-        Path(thePath.reverse)
+        Path(thePath)
     }
 
-    def getPaths(board: Board, start:Coordinates, end: Coordinates): List[Path] = {
+
+    def possibleMoves(thePath: List[Coordinates], sum: Board, board: Board): Set[Coordinates] = {
+        val x=thePath.zipWithIndex.foldLeft(sum) {
+            case (sumBoard: Board, (prevCoords: Coordinates, prevIndex: Int)) => {
+                val st = piece.st(board, prevCoords, prevIndex + 1)
+                st intersect sumBoard
+            }
+        }.activeSpaces
+
+        x
+    }
+
+    def getPaths(implicit board: Board, start:Coordinates, end: Coordinates): List[Path] = {
         val sum = getSum(board, start, end)
 
+        var thePath = start :: Nil
 
-        Nil
+        def paths(partials: List[List[Coordinates]]): List[List[Coordinates]] = {
+            val partialsNotDone = partials.filter( (p: List[Coordinates]) => p.head != end)
+
+            if (partialsNotDone.size == 0) {
+                partials
+            } else {
+                val newPartials = for {
+                    partial <- partials
+                    move <- possibleMoves(partial, sum, board)
+                } yield (move :: partial)
+                paths(newPartials)
+            }
+        }
+
+        val pathypaths = paths(List(thePath))
+
+        pathypaths.map((p: List[Coordinates]) => new Path(p))
     }
 }
 
 case class Path(coordsList: List[Coordinates])(implicit board: Board) {
 
     override def toString: String = {
-        board.set(coordsList.zipWithIndex).toString
+        coordsList.reverse.map((c:Coordinates)=>(c.col+""+c.row)).mkString("->")
+    }
+
+    def toFullBoardString: String = {
+        board.set(coordsList.reverse.zipWithIndex).toString
     }
 }

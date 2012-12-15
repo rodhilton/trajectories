@@ -31,4 +31,27 @@ class PathFinderTest {
         println(path)
     }
 
+    @Test
+    def shouldPaths() {
+        val pathFinder = new PathFinder(Pieces.king)
+
+        val board = Board(8)
+
+        val paths = pathFinder.getPaths(board, ('a',2), ('c',7))
+
+        assertEquals(paths.size, 25)
+    }
+
+
+    @Test
+    def shouldPathsAgain() {
+        val pathFinder = new PathFinder(Pieces.king)
+
+        val board = Board(8)
+
+        val paths = pathFinder.getPaths(board, ('a',5), ('h',5))
+
+        assertEquals(paths.size, 393)
+    }
+
 }
