@@ -2,11 +2,10 @@ package com.nomachetejuggling
 
 package object trajectories {
     type Coordinates = Tuple2[Char, Int]
-    type Area = (Coordinates, Coordinates)
 
     implicit def toCoordinatesOps(coords: Coordinates) = new CoordinatesOps(coords)
 
-    implicit def toAreaOps(area: Area) = new AreaOps(area)
+    implicit def toArea(area: Tuple2[Coordinates, Coordinates]) = new Area(area._1, area._2)
 
     class CoordinatesOps(coords: Coordinates) {
         lazy val column = coords._1
@@ -34,22 +33,6 @@ package object trajectories {
         }
 
         lazy val asNumeric: (Int, Int) = (column-'a'+1, row)
-    }
-
-    class AreaOps(area: Area) {
-        lazy val topLeft = area._1
-        lazy val bottomRight = area._2
-
-        def isValid: Boolean = isOrientedProperly && isSquare
-
-        def contains(coords: Coordinates): Boolean = {
-            (area.topLeft.col to area.bottomRight.col).contains(coords.col) &&
-                (area.bottomRight.row to area.topLeft.row).contains(coords.row)
-        }
-
-        private def isOrientedProperly = area.bottomRight.col >= area.topLeft.col && area.topLeft.row >= area.bottomRight.row
-
-        private def isSquare = area.bottomRight.col - area.topLeft.col == area.topLeft.row - area.bottomRight.row
     }
 
 }

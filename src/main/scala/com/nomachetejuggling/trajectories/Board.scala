@@ -117,7 +117,7 @@ object Board {
 
         override def crop(area: Area): Board = {
             assert(contains(area.topLeft) && contains(area.bottomRight), "Asked to crop from " + area.topLeft +" to " + area.bottomRight +", but my size is "+size)
-            assert((area.topLeft to area.bottomRight).isValid, "Area given is not valid: "+area.toString())
+            assert((area.topLeft to area.bottomRight).isValid, "Area given is not valid: "+area)
 
             //Remove everything outside of our bounds, leaving only the correct elements (with the wrong indexes)
             val filteredBoard = filter{ case (coords, value) => area.contains(coords) }
@@ -131,7 +131,7 @@ object Board {
             new BoardImpl(area.topLeft.row - area.bottomRight.row + 1, offsetMap)
         }
 
-        override def toString() = {
+        override lazy val toString = {
             val rowStrings = for {
                 row <- rows
                 rowString = columns.map(col =>
