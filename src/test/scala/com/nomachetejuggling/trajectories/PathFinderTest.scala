@@ -64,4 +64,22 @@ class PathFinderTest {
         assertEquals(paths.size, 393)
     }
 
+    @Test
+    def shouldPathForLargePaths() {
+        val pathFinder = new PathFinder(Pieces.king)
+
+        val path = pathFinder.getPath(Board(15), ('h',1), ('h',15))
+
+        assertEquals(path.coordsList.size,15)
+    }
+
+    @Test
+    def shouldPathForMassivePaths() {
+        val pathFinder = new PathFinder(Pieces.king)
+
+        val path = pathFinder.getPath(Board(26), ('h',1), ('h',26))
+
+        assertEquals(path.coordsList.size,26)
+    }
+
 }
