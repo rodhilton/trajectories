@@ -1,6 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'scala'
 apply plugin: 'idea'
+apply plugin: 'application'
 
 repositories {
     mavenCentral()
@@ -12,16 +13,14 @@ dependencies {
 
     // Scala standard library
     compile 'org.scala-lang:scala-library:2.9.1'
-    compile 'org.scalaz:scalaz-core_2.9.1:6.0.4'
+    compile 'commons-cli:commons-cli:1.2'
+
+//    compile 'org.scalaz:scalaz-core_2.9.1:6.0.4'
 
     testCompile 'junit:junit:4.10'
-}
-
-dependencies {
-    compile 'commons-collections:commons-collections:3.2'
-    testCompile 'junit:junit:4.8.2'
     testCompile 'org.scalatest:scalatest:1.3'
 }
+
 
 tasks.withType(ScalaCompile) {
     scalaCompileOptions.useAnt = false
@@ -33,3 +32,4 @@ tasks.withType(ScalaCompile) {
         jvmArgs = ['-XX:MaxPermSize=512m']
     }
 }
+mainClassName = "com.nomachetejuggling.trajectories.Main"

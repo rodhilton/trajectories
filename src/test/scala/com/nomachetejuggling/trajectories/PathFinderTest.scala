@@ -12,7 +12,6 @@ class PathFinderTest {
         val board = Board(8)
 
         val sum=pathFinder.getSum(board, ('a',2), ('c',7))
-        println(sum)
         assertEquals(sum('a', 2), 5)
         assertEquals(sum('b', 3), 5)
         assertEquals(sum('c', 4), 5)
@@ -50,6 +49,17 @@ class PathFinderTest {
         val board = Board(8)
 
         val paths = pathFinder.getPaths(board, ('a',5), ('h',5))
+
+        assertEquals(paths.size, 393)
+    }
+
+    @Test
+    def shouldPathsFromAssignment12() {
+        val pathFinder = new PathFinder(Pieces.king)
+
+        val board = Board(8)
+
+        val paths = pathFinder.getPaths(board, ('a',4), ('h',4))
 
         assertEquals(paths.size, 393)
     }

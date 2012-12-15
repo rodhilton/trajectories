@@ -3,6 +3,7 @@ package com.nomachetejuggling.trajectories
 import annotation.tailrec
 import scala.collection.mutable.{Map=>MutableMap}
 
+
 case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {
     private val stCache: MutableMap[(Board, Coordinates, Int), Board] = MutableMap()
 
