@@ -2,7 +2,6 @@ package com.nomachetejuggling.trajectories
 
 import org.junit.Test
 import org.junit.Assert._
-import com.nomachetejuggling.trajectories.Board
 
 class BoardTest {
 
@@ -20,8 +19,6 @@ class BoardTest {
         assertTrue(s contains "[0][ ][ ][ ][ ]  3")
         assertTrue(s contains "[ ][ ][ ][ ][ ]  5")
         assertTrue(s contains " a  b  c  d  e ")
-
-        //        println(b2.toString)
     }
 
     @Test

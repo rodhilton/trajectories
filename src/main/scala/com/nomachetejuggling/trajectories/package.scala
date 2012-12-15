@@ -1,6 +1,11 @@
 package com.nomachetejuggling
 
 package object trajectories {
+    object Coordinates {
+        def fromNumeric(coordsNumeric: Tuple2[Int, Int]) = new Coordinates(('a' to 'z')(coordsNumeric._1-1), coordsNumeric._2)
+        def fromNumeric(col: Int, row: Int) = new Coordinates(('a' to 'z')(col-1), row)
+    }
+
     type Coordinates = Tuple2[Char, Int]
 
     implicit def toCoordinatesOps(coords: Coordinates) = new CoordinatesOps(coords)
