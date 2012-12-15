@@ -1,5 +1,7 @@
 package com.nomachetejuggling.trajectories
 
+import com.nomachetejuggling.trajectories._
+
 object Pieces {
 
     lazy val king = Piece(Moves.kingMove)

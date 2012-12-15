@@ -1,5 +1,6 @@
 package com.nomachetejuggling.trajectories
 
+
 class PathFinder(piece: Piece) {
     def getSum(board: Board, start: Coordinates, end: Coordinates): Board = {
         val startBoard = piece.calculateMovesForBoard(board.set(start->0))

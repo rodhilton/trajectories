@@ -2,6 +2,7 @@ package com.nomachetejuggling.trajectories
 
 import annotation.tailrec
 import scala.collection.mutable.{Map=>MutableMap}
+import com.nomachetejuggling.trajectories._
 
 
 case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {

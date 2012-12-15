@@ -2,8 +2,6 @@ package com.nomachetejuggling.trajectories.main
 
 import org.apache.commons.cli.{Option => Opt, _}
 import com.nomachetejuggling.trajectories._
-import scala.Some
-import com.nomachetejuggling.trajectories.Piece
 
 object Main {
     def main(args: Array[String]) {
@@ -126,6 +124,7 @@ class Main() {
             case "rook" => Some(Pieces.rook)
             case "bishop" => Some(Pieces.bishop)
             case "knight" => Some(Pieces.knight)
+            case "weird" => Some(Pieces.weird)
             case _ => None
         }
     }
