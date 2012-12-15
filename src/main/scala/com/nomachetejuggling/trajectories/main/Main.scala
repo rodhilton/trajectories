@@ -74,6 +74,8 @@ class Main() {
                                 util.Random.shuffle(paths).head
                             }
                         println(path.toFullBoardString)
+                        println("")
+                        println(paths.mkString("\n"))
 
                         println("\nShortest path is "+(path.size-1)+" moves")
                     }
@@ -81,6 +83,8 @@ class Main() {
                 } else {
                     val path = pathFinder.getPath(Board(size).illegal(illegal), startCoord.get, destCoord.get)
                     println(path.toFullBoardString)
+                    println("")
+                    println(path)
                     println("\nShortest path is "+(path.size-1)+" moves")
                 }
 
