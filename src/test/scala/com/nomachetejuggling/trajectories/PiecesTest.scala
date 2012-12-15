@@ -89,6 +89,30 @@ class PiecesTest {
     }
 
     @Test
+    def shouldGenerateCorrectBoardForPawn() {
+        //[ ][ ][2][ ][ ]  5
+        //[ ][ ][1][ ][ ]  4
+        //[ ][ ][0][ ][ ]  3
+        //[ ][ ][ ][ ][ ]  2
+        //[ ][ ][ ][ ][ ]  1
+        // a  b  c  d  e
+        val table: Board = Pieces.pawn.bigTable(5)
+
+        assertEquals(table.size, 5)
+        assertEquals(table('c',3), 0)
+        assertEquals(table('c',4), 1)
+        assertEquals(table('c',5), 2)
+        for (i<- 1 to 5) {
+            assertFalse(table.isDefinedAt('a',i))
+            assertFalse(table.isDefinedAt('b',i))
+            assertFalse(table.isDefinedAt('d',i))
+            assertFalse(table.isDefinedAt('e',i))
+        }
+        assertFalse(table.isDefinedAt('c',1))
+        assertFalse(table.isDefinedAt('c',2))
+    }
+
+    @Test
     def shouldGenerateForArbitraryBoards() {
         //[0][1][2][1][0]  5
         //[1][1][2][1][1]  4

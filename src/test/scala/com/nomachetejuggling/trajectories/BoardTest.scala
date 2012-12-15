@@ -370,4 +370,56 @@ class BoardTest {
 
         a.overlay(b, ('d', 1), (i,j)=>i+j)
     }
+
+    @Test
+    def shouldMask() {
+        /* When you mask A with B, any empty spots in B remove the spots from A, but the actual values of B don't matter.
+         *
+         * [3][ ] 2
+         * [1][2] 1
+         *  a  b
+         *
+         * And I want to mask with
+         *
+         * [0][1] 2  2x2
+         * [ ][1] 1
+         *  a  b
+         *
+         *  The result is
+         *
+         * [3][ ] 2  2x2
+         * [ ][2] 1
+         *  a  b
+         */
+        val a = Board(2).set(
+            ('a', 1) -> 1,
+            ('b', 1) -> 2,
+            ('a', 2) -> 3
+        )
+
+        val b = Board(2).set(
+            ('b', 1) -> 1,
+            ('a', 2) -> 0,
+            ('b', 2) -> 1
+        )
+
+        val c = a.mask(b)
+
+        assertEquals(c.size, 2)
+        assertTrue(c.get('a',1).isEmpty)
+        assertEquals(c('b', 1), 2)
+        assertEquals(c('a', 2), 3)
+        assertTrue(c.get('b',2).isEmpty)
+
+    }
+
+    @Test(expected=classOf[AssertionError])
+    def shouldMaskSameSize() {
+        val a = Board(3)
+        val b = Board(2)
+
+        val c = a.mask(b)
+
+    }
+
 }
