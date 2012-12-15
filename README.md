@@ -9,7 +9,24 @@ Requirements
 ----
 This program requires a JVM to run, with either java in the path or a JAVA_HOME variable set.
 
+Installation
+----
+The distribution file is trajectories.zip.  Unzip this into a directory of your choice and cd into it from a terminal.  In the examples below, I have extracted into ~/traj
+
+All examples were run in a unix environment, and thus run the script `trajectories`.  For Windows, use `trajectories.bat` instead.
+
 Usage
 ----
 
-
+```
+usage: trajectories
+ -a,--all             Output information about all paths (can be slow)
+ -d,--dest <arg>      The space to end (a2, c8, ...)
+ -h,--help            Print this help
+ -i,--illegal <arg>   Input spaces that are illegal separated by commas
+                      (a2,b3,e6)
+ -p,--piece <arg>     The piece to use (pawn, king, queen, knight, bishop,
+                      rook, weird
+ -s,--start <arg>     The space to start (a1, b6, ...)
+ -z,--size <arg>      Size of the board (must be <= 26)
+ ```
