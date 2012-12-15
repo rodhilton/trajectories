@@ -16,9 +16,9 @@ class BoardTest {
         val b2 = b.set(('a', 3), 0)
 
         val s = b2.toString
-        assertTrue(s contains "[ 0][  ][  ][  ][  ]  3")
-        assertTrue(s contains "[  ][  ][  ][  ][  ]  5")
-        assertTrue(s contains "  a   b   c   d   e")
+        assertTrue(s contains "[0][ ][ ][ ][ ]  3")
+        assertTrue(s contains "[ ][ ][ ][ ][ ]  5")
+        assertTrue(s contains " a  b  c  d  e")
     }
 
     @Test
