@@ -422,4 +422,14 @@ class BoardTest {
 
     }
 
+    @Test
+    def shouldFilterByValue() {
+        val a = Board(3).set(('a',1)->1, ('b',2)->2)
+
+        val c = a.filterWhere{ v: Int => v==1}
+
+        assertEquals(c('a',1),1)
+        assertFalse(c.isDefinedAt('b', 2))
+    }
+
 }

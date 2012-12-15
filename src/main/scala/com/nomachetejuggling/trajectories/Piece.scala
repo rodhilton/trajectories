@@ -4,12 +4,11 @@ import annotation.tailrec
 
 case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {
 
-    def bigTable(size: Int = 15): Board = {
-        val startPosition: Coordinates = Coordinates.fromNumeric(size / 2 + 1, size / 2 + 1)
-        val startBoard = Board(size).set(startPosition -> 0)
+    def bigTable(size: Int = 15): Board = movesStartingAt(Board(size), Coordinates.fromNumeric(size / 2 + 1, size / 2 + 1))
 
-        calculateMovesForBoard(startBoard, 0)
-    }
+    def movesStartingAt(board: Board, startPosition: Coordinates): Board = calculateMovesForBoard(board.set(startPosition -> 0), 0)
+
+    def st(board: Board, start: Coordinates, index: Int) = movesStartingAt(board, start).filterWhere(v => v == index)
 
     @tailrec
     final def calculateMovesForBoard(board: Board, startPosition: Int = 0): Board = {

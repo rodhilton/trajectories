@@ -7,46 +7,27 @@ trait Board {
     val size: Int
 
     def set(coordinates: Coordinates, value: Int): Board
-
     def get(coordinates: Coordinates): Option[Int]
-
     def plus(otherBoard: Board): Board
-
     def merge(otherBoard: Board, joiner: ((Int, Int) => Int), merger: ((Set[Coordinates], Set[Coordinates]) => Set[Coordinates]) = Board.union): Board
-
     def intersect(otherBoard: Board): Board
-
     def filter(f: ((Coordinates, Int)) => Boolean): Board
-
     def activeSpaces: Set[Coordinates]
-
     def allSpaces: Set[Coordinates]
-
     def crop(area: Area): Board
-
     def overlay(otherBoard: Board, mySpot: Coordinates, otherSpot: Coordinates, joiner: ((Int, Int) => Int)): Board
-
     def mask(otherBoard: Board): Board
-
     def contains(coords: Coordinates): Boolean
-
     def isDefinedAt(coords: Coordinates): Boolean
-
     def toMap: Map[Coordinates, Int]
-
     def getTopLeftOffset(coords: Coordinates): (Int, Int)
-
     def getTopLeft: Coordinates
 
     //Convenience Interface:
     def +(otherBoard: Board): Board = plus(otherBoard)
-
     def &(otherBoard: Board): Board = intersect(otherBoard)
-
     def contains(c: Char, i: Int): Boolean = contains((c, i))
-
     def isDefinedAt(c: Char, i: Int): Boolean = isDefinedAt((c, i))
-
     def set(pairs: (Coordinates, Int)*): Board = {
         pairs.foldLeft(this) {
             (b: Board, pair: (Coordinates, Int)) => b.set(pair._1, pair._2)
@@ -70,6 +51,9 @@ trait Board {
 
     def apply(c: Char, i: Int): Int = this((c, i))
 
+    def filterWhere(predicate: (Int)=>Boolean): Board = {
+        filter{ case (_: Coordinates, v: Int) => predicate(v)}
+    }
 }
 
 object Board {
