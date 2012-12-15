@@ -12,7 +12,7 @@ object Main {
 class Main() {
 
     def execute(args: Array[String]) {
-        val pieceOpt = new Opt("p", "piece", true, "The piece to use (pawn, king, queen, knight, bishop, rook")
+        val pieceOpt = new Opt("p", "piece", true, "The piece to use (pawn, king, queen, knight, bishop, rook, weird")
         val startOpt = new Opt("s", "start", true, "The space to start (a1, b6, ...)")
         val destOpt = new Opt("d", "dest", true, "The space to end (a2, c8, ...)")
         val sizeOpt = new Opt("z", "size", true, "Size of the board (must be <= 26)")
