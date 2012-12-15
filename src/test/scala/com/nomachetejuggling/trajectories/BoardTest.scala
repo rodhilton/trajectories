@@ -16,9 +16,9 @@ class BoardTest {
         val b2 = b.set(('a', 3), 0)
 
         val s = b2.toString
-        assertTrue(s contains "[0][ ][ ][ ][ ]  3")
-        assertTrue(s contains "[ ][ ][ ][ ][ ]  5")
-        assertTrue(s contains " a  b  c  d  e ")
+        assertTrue(s contains "[ 0][  ][  ][  ][  ]  3")
+        assertTrue(s contains "[  ][  ][  ][  ][  ]  5")
+        assertTrue(s contains "  a   b   c   d   e")
     }
 
     @Test
@@ -218,10 +218,10 @@ class BoardTest {
     def canGetTopLeftOffset() {
         val b = Board(3)
 
-        assertEquals(b.getTopLeftOffset(('b',1)), (-1, 2))
-        assertEquals(b.getTopLeftOffset(('b',2)), (-1, 1))
-        assertEquals(b.getTopLeftOffset(('a',3)), (0, 0))
-        assertEquals(b.getTopLeftOffset(('c',1)), (-2, 2))
+        assertEquals(b.getTopLeftOffset(('b', 1)), (-1, 2))
+        assertEquals(b.getTopLeftOffset(('b', 2)), (-1, 1))
+        assertEquals(b.getTopLeftOffset(('a', 3)), (0, 0))
+        assertEquals(b.getTopLeftOffset(('c', 1)), (-2, 2))
     }
 
 
@@ -282,7 +282,7 @@ class BoardTest {
             ('b', 2) -> 3
         )
 
-        val c = a.overlay(b, ('b', 2), (a, b) => scala.math.max(a,b))
+        val c = a.overlay(b, ('b', 2), (a, b) => scala.math.max(a, b))
 
         assertEquals(c.size, 2)
         assertEquals(c('a', 1), 2)
@@ -303,7 +303,7 @@ class BoardTest {
             ('b', 2) -> 4
         )
 
-        val c = a.overlay(b, ('d', 4), ('b', 2), (i,j)=>i+j)
+        val c = a.overlay(b, ('d', 4), ('b', 2), (i, j) => i + j)
 
         assertEquals(c.size, 3)
         assertEquals(c('b', 2), 10)
@@ -352,7 +352,7 @@ class BoardTest {
             ('b', 2) -> 1
         )
 
-        val c = a.overlay(b, ('b', 2), (a, b) => a+b)
+        val c = a.overlay(b, ('b', 2), (a, b) => a + b)
 
         assertEquals(c.size, 2)
         assertEquals(c('a', 1), 4)
@@ -368,7 +368,7 @@ class BoardTest {
         val a = Board(3)
         val b = Board(2)
 
-        a.overlay(b, ('d', 1), (i,j)=>i+j)
+        a.overlay(b, ('d', 1), (i, j) => i + j)
     }
 
     @Test
@@ -406,14 +406,14 @@ class BoardTest {
         val c = a.mask(b)
 
         assertEquals(c.size, 2)
-        assertTrue(c.get('a',1).isEmpty)
+        assertTrue(c.get('a', 1).isEmpty)
         assertEquals(c('b', 1), 2)
         assertEquals(c('a', 2), 3)
-        assertTrue(c.get('b',2).isEmpty)
+        assertTrue(c.get('b', 2).isEmpty)
 
     }
 
-    @Test(expected=classOf[AssertionError])
+    @Test(expected = classOf[AssertionError])
     def shouldMaskSameSize() {
         val a = Board(3)
         val b = Board(2)
@@ -424,12 +424,74 @@ class BoardTest {
 
     @Test
     def shouldFilterByValue() {
-        val a = Board(3).set(('a',1)->1, ('b',2)->2)
+        val a = Board(3).set(('a', 1) -> 1, ('b', 2) -> 2)
 
-        val c = a.filterWhere{ v: Int => v==1}
+        val c = a.filterWhere {
+            v: Int => v == 1
+        }
 
-        assertEquals(c('a',1),1)
+        assertEquals(c('a', 1), 1)
         assertFalse(c.isDefinedAt('b', 2))
+    }
+
+    @Test
+    def shouldSupportIllegalSpaces() {
+        val basic = Board(3).set(('a', 1) -> 1, ('b', 2) -> 2).illegal(('a', 2))
+        println(basic)
+        assertTrue(basic.illegalSpaces.contains(('a', 2)))
+        assertFalse(basic.isLegal(('a', 2)))
+
+        val illegalAfterSetting = Board(3).set(('a', 1) -> 1, ('b', 2) -> 2).illegal(('a', 1))
+        assertFalse(illegalAfterSetting.isDefinedAt('a', 1))
+        assertFalse(illegalAfterSetting.legalSpaces.contains(('a', 1)))
+
+        val madeLegal = basic.legal(('a', 2))
+        assertTrue(madeLegal.isLegal(('a', 2)))
+
+    }
+
+    @Test
+    def shouldSupportIllegalCrop() {
+        //[ ][8][9] 3
+        //[4][X][6] 2
+        //[1][2][ ] 1
+        // a  b  c
+        val complex = Board(3).set(
+            ('a', 1) -> 1,
+            ('b', 1) -> 2,
+            ('a', 2) -> 4,
+            ('c', 2) -> 6,
+            ('b', 3) -> 8,
+            ('c', 3) -> 9
+        ).illegal(('b', 2))
+
+        val complexCrop = complex.crop(('b', 2) to('c', 1))
+
+        assertEquals(complexCrop.size, 2)
+        assertEquals(complexCrop.activeSpaces.size, 2)
+        assertEquals(complexCrop.legalSpaces.size, 3)
+        assertEquals(complexCrop.illegalSpaces.size, 1)
+        assertFalse(complexCrop.legalSpaces.contains(('a', 2)))
+        assertFalse(complexCrop.isLegal('a', 2))
+
+    }
+
+    @Test
+    def shouldSupportIllegalsWhenMerging() {
+
+        val a = Board(2).illegal(('a', 1))
+        val b = Board(2).illegal(('b', 2))
+
+        val merged = a.merge(b, (i,j)=>i+j)
+
+        assertFalse(merged.isLegal('a', 1))
+        assertFalse(merged.isLegal('b', 2))
+
+    }
+
+    @Test(expected = classOf[AssertionError])
+    def illegalOverridesSet() {
+        Board(3).illegal(('a', 1)).set(('a', 1) -> 1)
     }
 
 }

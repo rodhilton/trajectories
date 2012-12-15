@@ -13,7 +13,11 @@ trait Board {
     def intersect(otherBoard: Board): Board
     def filter(f: ((Coordinates, Int)) => Boolean): Board
     def activeSpaces: Set[Coordinates]
-    def allSpaces: Set[Coordinates]
+    def legalSpaces: Set[Coordinates]
+    val illegalSpaces: Set[Coordinates]
+    def illegal(illegalCoords: Coordinates): Board
+    def legal(legalCoords: Coordinates): Board
+    def values: Set[Int]
     def crop(area: Area): Board
     def overlay(otherBoard: Board, mySpot: Coordinates, otherSpot: Coordinates, joiner: ((Int, Int) => Int)): Board
     def mask(otherBoard: Board): Board
@@ -28,9 +32,24 @@ trait Board {
     def &(otherBoard: Board): Board = intersect(otherBoard)
     def contains(c: Char, i: Int): Boolean = contains((c, i))
     def isDefinedAt(c: Char, i: Int): Boolean = isDefinedAt((c, i))
+    def isLegal(coords: Coordinates): Boolean = contains(coords) && !illegalSpaces.contains(coords)
+    def isLegal(c: Char, i: Int): Boolean = isLegal((c,i))
+
+    //TODO: ugly duplication
     def set(pairs: (Coordinates, Int)*): Board = {
         pairs.foldLeft(this) {
             (b: Board, pair: (Coordinates, Int)) => b.set(pair._1, pair._2)
+        }
+    }
+    def illegal(coords: Coordinates*): Board = {
+        coords.foldLeft(this) {
+            (b: Board, c: Coordinates) => b.illegal(c)
+        }
+    }
+
+    def illegal(coords: Iterable[Coordinates]): Board = {
+        coords.foldLeft(this) {
+            (b: Board, c: Coordinates) => b.illegal(c)
         }
     }
 
@@ -57,26 +76,35 @@ trait Board {
 }
 
 object Board {
-    def apply(size: Int): Board = new BoardImpl(size, Map.empty)
-
-    //TODO: figure out why I can't do this
-    //def apply(size: Int, pairs: Tuple2[Tuple2[Char, Int], Int]*): Board = Board(size).set(pairs)
+    def apply(size: Int): Board = new BoardImpl(size, Map.empty, Set.empty)
 
     val intersection = (a: Set[Coordinates], b: Set[Coordinates]) => a & b
     val union = (a: Set[Coordinates], b: Set[Coordinates]) => a ++ b
 
-    case class BoardImpl(override val size: Int, boardSpace: Map[Coordinates, Int]) extends Board {
+    case class BoardImpl(override val size: Int, boardSpace: Map[Coordinates, Int], override val illegalSpaces: Set[Coordinates]) extends Board {
         val columns = ('a' to ('a' to 'z')(size - 1))
         val rows = (1 to size).reverse
-        override lazy val allSpaces = columns.flatMap(c => rows.map(r => (c, r))).toSet
-
+        private lazy val allSpaces = columns.flatMap(c => rows.map(r => (c, r))).toSet
+        override lazy val legalSpaces = allSpaces -- illegalSpaces
+        override lazy val values = boardSpace.values.toSet
         override lazy val toMap: Map[Coordinates, Int] = boardSpace
 
         override def getTopLeft: Coordinates = ('a', size)
 
         override def set(coordinates: Coordinates, value: Int): Board = {
             assert((columns.head, size) to (columns.last, 1) contains coordinates, "Tried to set outside of bounds: " + coordinates + ", but size is " + size)
-            new BoardImpl(size, boardSpace.updated(coordinates, value))
+            assert(!illegalSpaces.contains(coordinates), "Cannot set a value on an illegal space: "+coordinates)
+            new BoardImpl(size, boardSpace.updated(coordinates, value), illegalSpaces)
+        }
+
+        override def illegal(illegalCoords: Coordinates): Board = {
+            assert((columns.head, size) to (columns.last, 1) contains illegalCoords, "Tried to set illegal outside of bounds: " + illegalCoords + ", but size is " + size)
+
+            new BoardImpl(size, boardSpace-illegalCoords, illegalSpaces+illegalCoords)
+        }
+
+        override def legal(legalCoords: Coordinates): Board = {
+            new BoardImpl(size, boardSpace, illegalSpaces - legalCoords)
         }
 
         override def get(coordinates: Coordinates): Option[Int] = boardSpace.get(coordinates)
@@ -87,7 +115,7 @@ object Board {
 
         override def mask(otherBoard: Board): Board = merge(otherBoard, (left, right) => left, intersection)
 
-        override def filter(f: ((Coordinates, Int)) => Boolean): Board = new BoardImpl(size, boardSpace.filter(f))
+        override def filter(f: ((Coordinates, Int)) => Boolean): Board = new BoardImpl(size, boardSpace.filter(f), illegalSpaces)
 
         override def contains(coords: Coordinates): Boolean = columns.contains(coords.col) && rows.contains(coords.row)
 
@@ -121,7 +149,7 @@ object Board {
                     }
             }
 
-            new BoardImpl(size, spacesAsTuples.toMap)
+            new BoardImpl(size, spacesAsTuples.toMap, merger(illegalSpaces,otherBoard.illegalSpaces))
         }
 
 
@@ -140,7 +168,11 @@ object Board {
                 case (coords, value) => coords + offset -> value
             }
 
-            new BoardImpl(area.topLeft.row - area.bottomRight.row + 1, offsetMap)
+            val offsetIllegalSpaces = illegalSpaces.collect{
+                case coords: Coordinates => coords+offset
+            }
+
+            new BoardImpl(area.topLeft.row - area.bottomRight.row + 1, offsetMap, offsetIllegalSpaces)
         }
 
         //Could this be as simple as getTopLeft - coords?  Perhaps in the Ops?
@@ -153,13 +185,16 @@ object Board {
                 row <- rows
                 rowString = columns.map(col =>
                     boardSpace.get((col, row)) match {
-                        case Some(x) => "[" + x + "]"
-                        case None => "[ ]"
+                        case Some(x) => "[" + "%2d".format(x) + "]"
+                        case None => {
+                            if (illegalSpaces.contains((col,row))) "[##]"
+                            else "[  ]"
+                        }
                     }
                 )
             } yield rowString.mkString("") + "  " + row
 
-            rowStrings.mkString("\n") + "\n" + columns.map(c => " " + c + " ").mkString("")
+            rowStrings.mkString("\n") + "\n" + columns.map(c => "  " + c + " ").mkString("")
         }
 
     }
