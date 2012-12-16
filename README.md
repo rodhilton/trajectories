@@ -829,8 +829,7 @@ Users can mark certain parts of the board as unavailable or illegal.  To do this
 Let's take our earlier path from a5 to h5 and drastically reduce the number of possible moves by placing a wall going down the center of the board.
 
 ```
-$ bin/trajectories -p king -s a5 -d h5 \
- -i e1,e2,e3,e4,e6,e7,e8,d1,d2,d3,d4,d6,d7,d8 --all
+$ bin/trajectories -p king -s a5 -d h5 -i e1,e2,e3,e4,e6,e7,e8,d1,d2,d3,d4,d6,d7,d8 --all
 Number of shortest trajectories from a5 to h5: 49
 Here's one of them: 
 
@@ -900,8 +899,7 @@ Shortest path is 7 moves
 We can do lots of interesting things by adding obstacles.  Let's add a whole bunch so that the shortest paths are much longer.  Since this increases the total number of possible paths so much, we'll be trimming out a chunk of the actual path output.
 
 ```
-$ bin/trajectories -p king -s a1 -d h1 \
- -i b1,c1,d1,e1,f1,g1,c2,d2,e2,f2,d3,e3,e4,e5,e6,e7 -all
+$ bin/trajectories -p king -s a1 -d h1 -i b1,c1,d1,e1,f1,g1,c2,d2,e2,f2,d3,e3,e4,e5,e6,e7 -all
 Number of shortest trajectories from a1 to h1: 1862
 Here's one of them: 
 
