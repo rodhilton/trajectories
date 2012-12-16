@@ -10,7 +10,7 @@ This program requires a JVM to run, with either java in the path or a JAVA_HOME 
 
 ## Installation
 
-The distribution file is trajectories.zip.  Unzip this into a directory of your choice and cd into it from a terminal.  In the examples below, I have extracted into `~/traj/`
+The distribution file is trajectories.zip.  Unzip this into a directory of your choice and cd into it from a terminal.
 
 All examples were run in a unix environment, and thus run the script `trajectories`.  For Windows, use `trajectories.bat` instead.
 
