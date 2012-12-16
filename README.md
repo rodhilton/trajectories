@@ -4,6 +4,8 @@ Project for CSCI7582: Artificial Intelligence.
 
 This program takes as input a chess board with or without obstacles, an element p (a chess piece), and start and destination points on the chess board.  It will generate a shortest path (or all shortest paths) from the start to the destination using methods covered in Professor Boris Stilman's Artificial Intelligence class at University of Colorado Denver as well as in his book, "Linguistic Geometry: From Search to Construction"
 
+The program is written using Scala and built using Gradle.  Source code is available on GitHub.
+
 ## Requirements
 
 This program requires a JVM to run, with either java in the path or a JAVA_HOME variable set.
@@ -241,6 +243,14 @@ Here it is:
 c3->c4->c5->c6->c7
 
 Shortest path is 4 moves
+```
+
+If we try to move in the opposite direction, taking a pawn from c3 to c7, this requires moving "backwards", and is thus disallowed.
+
+```
+$ bin/trajectories -p pawn -s c7 -d c3 --all
+Number of shortest trajectories from c7 to c3: 0
+It's impossible to reach the destination from the start position.
 ```
 
 ### Custom Pieces
