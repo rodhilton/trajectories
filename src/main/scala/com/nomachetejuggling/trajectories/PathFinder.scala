@@ -5,7 +5,7 @@ class PathFinder(piece: Piece) {
     def getSum(board: Board, start: Coordinates, end: Coordinates): Board = {
         val startBoard = piece.calculateMovesForBoard(board.set(start->0))
 
-        val destBoard = piece.calculateMovesForBoard(board.set(end->0))
+        val destBoard = piece.reverse.calculateMovesForBoard(board.set(end->0))
 
         val sum=startBoard+destBoard
 

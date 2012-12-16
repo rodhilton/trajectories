@@ -166,4 +166,25 @@ class PiecesTest {
         assertEquals(moveBoard('e',2), 1)
     }
 
+    @Test
+    def shouldNotReverseNormalPieces() {
+        val whiteKing = Pieces.king
+        val blackKing = whiteKing.reverse
+
+        assertTrue(whiteKing.isValid(('a', 2), ('a',3)))
+        assertTrue(blackKing.isValid(('a', 2), ('a',3)))
+    }
+
+    @Test
+    def shouldReversePawn() {
+        val whitePawn = Pieces.pawn
+        val blackPawn = whitePawn.reverse
+
+        assertTrue(whitePawn.isValid(('a', 2), ('a',3)))
+        assertFalse(whitePawn.isValid(('a', 3), ('a',2)))
+
+        assertFalse(blackPawn.isValid(('a', 2), ('a',3)))
+        assertTrue(blackPawn.isValid(('a', 3), ('a',2)))
+    }
+
 }

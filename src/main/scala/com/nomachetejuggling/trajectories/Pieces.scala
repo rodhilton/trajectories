@@ -9,7 +9,7 @@ object Pieces {
     lazy val bishop = Piece(Moves.bishopMove)
     lazy val knight = Piece(Moves.knightMove)
     lazy val rook = Piece(Moves.rookMove)
-    lazy val pawn = Piece(Moves.pawnMove)
+    lazy val pawn = Piece(Moves.pawnMove, Piece.flip)
     lazy val weird = Piece(Moves.weirdMove)
 
     private object Moves {
