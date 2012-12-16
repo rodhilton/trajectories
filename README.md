@@ -11,7 +11,7 @@ This program requires a JVM to run, with either java in the path or a JAVA_HOME 
 
 Installation
 ----
-The distribution file is trajectories.zip.  Unzip this into a directory of your choice and cd into it from a terminal.  In the examples below, I have extracted into ~/traj
+The distribution file is trajectories.zip.  Unzip this into a directory of your choice and cd into it from a terminal.  In the examples below, I have extracted into `~/traj/`
 
 All examples were run in a unix environment, and thus run the script `trajectories`.  For Windows, use `trajectories.bat` instead.
 
@@ -231,6 +231,33 @@ Let's look at a pawn.  A pawn can only move straight ahead (we don't take diagon
 So if we generate moves from c3 to c7, we get what we expect.
 
 TODO: this section coming soon.  Pawns are weird.
+
+The system also supports a 'weird' piece.  This is a piece that doesn't move like any chess piece, in order to show how simple it is to define custom pieces.  Though a piece cannot be defined via commandline, it's easy to add one.
+
+The 'weird' piece moves as follows: move like a king, unless you're sitting on a column that's a vowel, in which case move like a queen.  The tab15 for this piece looks like this:
+
+```
+[2][2][2][3][3][3][3][3][2][3][3][3][3][3][2]  15
+[3][2][2][2][3][3][3][3][2][3][3][3][3][2][2]  14
+[3][3][2][2][2][3][3][3][2][3][3][3][2][2][2]  13
+[3][3][3][2][2][2][3][3][2][3][3][2][2][2][3]  12
+[3][3][3][3][2][2][2][3][2][3][2][2][2][3][3]  11
+[3][3][3][3][3][2][2][2][2][2][2][2][3][3][3]  10
+[2][2][2][2][2][2][1][1][1][2][2][2][2][2][2]  9
+[2][2][2][2][2][2][1][0][1][2][2][2][2][2][2]  8
+[2][2][2][2][2][2][1][1][1][2][2][2][2][2][2]  7
+[3][3][3][3][3][2][2][2][2][2][2][2][3][3][3]  6
+[3][3][3][3][2][2][2][3][2][3][2][2][2][3][3]  5
+[3][3][3][2][2][2][3][3][2][3][3][2][2][2][3]  4
+[3][3][2][2][2][3][3][3][2][3][3][3][2][2][2]  3
+[3][2][2][2][3][3][3][3][2][3][3][3][3][2][2]  2
+[2][2][2][3][3][3][3][3][2][3][3][3][3][3][2]  1
+ a  b  c  d  e  f  g  h  i  j  k  l  m  n  o 
+```
+
+What is interesting here is that the tab15 is of less use than the tab15 for other pieces, since you can't directly overlay the 8x8 grid of a chess board without it changing the letters.  Moves *must* be calculated from scratch on the board when working with the weird piece.
+
+Nonetheless, the program rapidly generates paths.  Here are the paths of the weird piece from d2 to h8.
 
 remaining: 
 * weird piece
