@@ -804,5 +804,107 @@ a3->i3->z20
 Shortest path is 2 moves
 ```
 
-remaining: 
-* obstacles
+## Obstacles
+
+Users can mark certain parts of the board as unavailable or illegal.  To do this, supply a comma delimited (with no spaces) list of spots to the --illegal or -i argument.
+
+Let's take our earlier path from a5 to h5 and drastically reduce the number of possible moves by placing a wall going down the center of the board.
+
+```
+air0day@babbage:~/traj ±(master ✗) » bin/trajectories -p king -s a5 -d h5 -i e1,e2,e3,e4,e6,e7,e8,d1,d2,d3,d4,d6,d7,d8 --all
+Number of shortest trajectories from a5 to h5: 49
+Here's one of them: 
+
+[ ][ ][ ][#][#][ ][ ][ ]  8
+[ ][ ][ ][#][#][ ][ ][ ]  7
+[ ][ ][ ][#][#][ ][ ][ ]  6
+[0][ ][2][3][4][5][ ][7]  5
+[ ][1][ ][#][#][ ][6][ ]  4
+[ ][ ][ ][#][#][ ][ ][ ]  3
+[ ][ ][ ][#][#][ ][ ][ ]  2
+[ ][ ][ ][#][#][ ][ ][ ]  1
+ a  b  c  d  e  f  g  h 
+
+a5->b5->c6->d5->e5->f6->g5->h5
+a5->b5->c6->d5->e5->f6->g6->h5
+a5->b5->c6->d5->e5->f5->g4->h5
+a5->b5->c6->d5->e5->f5->g5->h5
+a5->b5->c6->d5->e5->f5->g6->h5
+a5->b5->c6->d5->e5->f4->g4->h5
+a5->b5->c6->d5->e5->f4->g5->h5
+a5->b5->c5->d5->e5->f6->g5->h5
+a5->b5->c5->d5->e5->f6->g6->h5
+a5->b5->c5->d5->e5->f5->g4->h5
+a5->b5->c5->d5->e5->f5->g5->h5
+a5->b5->c5->d5->e5->f5->g6->h5
+a5->b5->c5->d5->e5->f4->g4->h5
+a5->b5->c5->d5->e5->f4->g5->h5
+a5->b5->c4->d5->e5->f6->g5->h5
+a5->b5->c4->d5->e5->f6->g6->h5
+a5->b5->c4->d5->e5->f5->g4->h5
+a5->b5->c4->d5->e5->f5->g5->h5
+a5->b5->c4->d5->e5->f5->g6->h5
+a5->b5->c4->d5->e5->f4->g4->h5
+a5->b5->c4->d5->e5->f4->g5->h5
+a5->b6->c6->d5->e5->f6->g5->h5
+a5->b6->c6->d5->e5->f6->g6->h5
+a5->b6->c6->d5->e5->f5->g4->h5
+a5->b6->c6->d5->e5->f5->g5->h5
+a5->b6->c6->d5->e5->f5->g6->h5
+a5->b6->c6->d5->e5->f4->g4->h5
+a5->b6->c6->d5->e5->f4->g5->h5
+a5->b6->c5->d5->e5->f6->g5->h5
+a5->b6->c5->d5->e5->f6->g6->h5
+a5->b6->c5->d5->e5->f5->g4->h5
+a5->b6->c5->d5->e5->f5->g5->h5
+a5->b6->c5->d5->e5->f5->g6->h5
+a5->b6->c5->d5->e5->f4->g4->h5
+a5->b6->c5->d5->e5->f4->g5->h5
+a5->b4->c5->d5->e5->f6->g5->h5
+a5->b4->c5->d5->e5->f6->g6->h5
+a5->b4->c5->d5->e5->f5->g4->h5
+a5->b4->c5->d5->e5->f5->g5->h5
+a5->b4->c5->d5->e5->f5->g6->h5
+a5->b4->c5->d5->e5->f4->g4->h5
+a5->b4->c5->d5->e5->f4->g5->h5
+a5->b4->c4->d5->e5->f6->g5->h5
+a5->b4->c4->d5->e5->f6->g6->h5
+a5->b4->c4->d5->e5->f5->g4->h5
+a5->b4->c4->d5->e5->f5->g5->h5
+a5->b4->c4->d5->e5->f5->g6->h5
+a5->b4->c4->d5->e5->f4->g4->h5
+a5->b4->c4->d5->e5->f4->g5->h5
+
+Shortest path is 7 moves
+```
+
+We can do lots of interesting things by adding obstacles.  Let's add a whole bunch so that the shortest paths are much longer.  Since this increases the total number of possible paths so much, we'll be trimming out a chunk of the actual path output.
+
+```
+air0day@babbage:~/traj ±(master ✗) » bin/trajectories -p king -s a1 -d h1 -i b1,c1,d1,e1,f1,g1,c2,d2,e2,f2,d3,e3,e4,e5,e6,e7 -all
+Number of shortest trajectories from a1 to h1: 1862
+Here's one of them: 
+
+[  ][  ][  ][  ][ 7][  ][  ][  ]  8
+[  ][  ][  ][ 6][##][ 8][  ][  ]  7
+[  ][  ][ 5][  ][##][  ][ 9][  ]  6
+[  ][ 4][  ][  ][##][  ][  ][10]  5
+[  ][  ][ 3][  ][##][  ][11][  ]  4
+[  ][  ][ 2][##][##][  ][12][  ]  3
+[  ][ 1][##][##][##][##][  ][13]  2
+[ 0][##][##][##][##][##][##][14]  1
+  a   b   c   d   e   f   g   h 
+
+a1->a2->b3->a4->b5->c6->d7->e8->f7->f6->f5->g4->h3->h2->h1
+a1->a2->b3->a4->b5->c6->d7->e8->f7->f6->f5->g4->h3->g2->h1
+a1->a2->b3->a4->b5->c6->d7->e8->f7->f6->f5->g4->f3->g2->h1
+a1->a2->b3->a4->b5->c6->d7->e8->f7->f6->f5->g4->g3->h2->h1
+a1->a2->b3->a4->b5->c6->d7->e8->f7->f6->f5->g4->g3->g2->h1
+....(removed for space)....
+a1->b2->a3->b4->c5->d6->d7->e8->f7->g6->g5->f4->f3->g2->h1
+a1->b2->a3->b4->c5->d6->d7->e8->f7->g6->g5->f4->g3->h2->h1
+a1->b2->a3->b4->c5->d6->d7->e8->f7->g6->g5->f4->g3->g2->h1
+
+Shortest path is 14 moves
+```
+
