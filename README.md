@@ -223,7 +223,25 @@ Let's look at a pawn.  A pawn can only move straight ahead (we don't take diagon
 
 So if we generate moves from c3 to c7, we get what we expect.
 
-TODO: this section coming soon.  Pawns are weird.
+```
+air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p pawn -s c3 -d c7 --all
+Number of shortest trajectories from c3 to c7: 1
+Here it is: 
+
+[ ][ ][ ][ ][ ][ ][ ][ ]  8
+[ ][ ][4][ ][ ][ ][ ][ ]  7
+[ ][ ][3][ ][ ][ ][ ][ ]  6
+[ ][ ][2][ ][ ][ ][ ][ ]  5
+[ ][ ][1][ ][ ][ ][ ][ ]  4
+[ ][ ][0][ ][ ][ ][ ][ ]  3
+[ ][ ][ ][ ][ ][ ][ ][ ]  2
+[ ][ ][ ][ ][ ][ ][ ][ ]  1
+ a  b  c  d  e  f  g  h 
+
+c3->c4->c5->c6->c7
+
+Shortest path is 4 moves
+```
 
 ### Custom Pieces
 
