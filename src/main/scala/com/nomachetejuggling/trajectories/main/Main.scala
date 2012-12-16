@@ -63,7 +63,7 @@ class Main() {
                     println("Number of shortest trajectories from " + startInput + " to " + destInput + ": " + paths.size)
 
                     if (paths.size == 0) {
-                        println("You have probably cut off all paths via illegal spaces")
+                        println("It's impossible to reach the destination from the start position.")
                     } else {
                         val path =
                             if (paths.size == 1) {

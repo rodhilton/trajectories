@@ -16,7 +16,10 @@ case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {
         val key: (Board, Coordinates, Int) = (board, start, index)
 
         if(!stCache.isDefinedAt(key))
-            stCache.put(key, movesStartingAt(board, start).filterWhere(v => v == index))
+        {
+            val moves: Board = movesStartingAt(board, start).filterWhere(v => v == index)
+            stCache.put(key, moves)
+        }
 
         stCache(key)
     }

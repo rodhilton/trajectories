@@ -54,11 +54,14 @@ object Pieces {
         }
 
         lazy val weirdMove = (from:Coordinates, to: Coordinates) => {
-            if ( Set('a', 'e', 'i', 'o', 'u').contains(from.col ))
-                queenMove(from,to)
-            else
-                kingMove(from,to)
+            val fromN = from.asNumeric
+            val toN = to.asNumeric
+            val offsetHorizontal = (fromN._1 - toN._1).abs
+            val offsetVertical = (fromN._2 - toN._2).abs
 
+            //diagonal 2, straight 1
+            (offsetHorizontal == offsetVertical && offsetHorizontal == 2) ||
+                (offsetHorizontal != offsetVertical && ((offsetHorizontal == 0 && offsetVertical == 1) || (offsetHorizontal == 1 && offsetVertical == 0)))
         }
 
         lazy val queenMove = (from:Coordinates, to: Coordinates) => {
