@@ -501,3 +501,16 @@ a1->b2->a3->b4->c5->d6->d7->e8->f7->g6->g5->f4->g3->g2->h1
 Shortest path is 14 moves
 ```
 
+# Remarks
+
+I enjoyed doing this, and it was great Scala practice.  If you look at the code, you'll see that everything is stateless except the memoization of the ST function.  Every modification you make to a Board, be it setting coordinates to specific values or intersecting two boards, results in a new immutable board rather than changing state.  Pieces are created by constructing them with functions, and lots of good functional programming practices are employed.
+
+Every class was designed in a TDD fashion, in a manner similar to the projects in Martin Odersky's Functional Programming Principles in Scala course on Coursera.  That is to say, I would write an interface for a very small unit of functionality, write failing tests for it, then make it work.  I'd build new functionality on old functionality by composing functions together until eventually the class was complete.  It was stunning how often this method led to code working correctly on the first try.  Due to the strong type system I used, a number of would-be bugs were actually caught by the compiler, so getting the code to successfully compile often took longer than in most projects I work on, but once it compiled it almost always worked correctly the first time.  Gluing components together was incredibly smooth, and I felt that using strict TDD with Scala is what allowed me to finish a semester-long term project in 3 days.
+
+# Coming Soon
+
+Though this project is completed and turned in now, there are still a couple of things nagging at my mind about the code.  For one, there is a bit more duplication than I'd like in a few areas, particularly `PathFinder`.  There are also some early functions I wrote in `Board` which I can probably refactor to more elegantly use more general functions that I wrote later, and I'd like to do that knowing the safety of the unit tests will keep things working.
+
+Most importantly, the concept of illegal spaces is implemented in a way I find a bit odd.  It's based on what we discussed in class, in which an illegal space is one that a piece cannot land on.  However, I would imagine that, to evaluate a true chess board, one would have to specify every space in which another piece sits as illegal.  If one were to do this, illegality would not have the effect desired.  For example, a queen could move straight through an illegal spot to her destination, even though in a real game of chess this would be unallowed.  Queens, rooks, and bishops can't move "through" illegal spots to get to destinations, but knights can.  This distinction isn't represented in the project requirements, so it isn't represented in the code.  I'd like to add this.
+
+
