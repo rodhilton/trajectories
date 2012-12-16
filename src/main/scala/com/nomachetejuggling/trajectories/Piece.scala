@@ -4,9 +4,25 @@ import annotation.tailrec
 import scala.collection.mutable.{Map=>MutableMap}
 import com.nomachetejuggling.trajectories._
 
+object Piece {
+    val normal = (from: Coordinates, to: Coordinates) => (from, to)
+    val flip = (from: Coordinates, to: Coordinates) => ((from.col, -from.row), (to.col, -to.row))
+}
 
-case class Piece(isValid: (Coordinates, Coordinates) => Boolean) {
+
+case class Piece(
+                    isValid: (Coordinates, Coordinates) => Boolean,
+                    reverseTransformer: (Coordinates, Coordinates) => (Coordinates, Coordinates) = Piece.normal
+                    ) {
     private val stCache: MutableMap[(Board, Coordinates, Int), Board] = MutableMap()
+
+    lazy val reverse: Piece = {
+        val transformedIsValid = (from: Coordinates, to: Coordinates) => {
+            val reversed = reverseTransformer(from, to)
+            isValid(reversed._1, reversed._2)
+        }
+        Piece(transformedIsValid, reverseTransformer)
+    }
 
     def bigTable(size: Int = 15): Board = movesStartingAt(Board(size), Coordinates.fromNumeric(size / 2 + 1, size / 2 + 1))
 
