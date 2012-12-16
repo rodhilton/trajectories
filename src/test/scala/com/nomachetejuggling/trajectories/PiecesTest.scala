@@ -96,7 +96,7 @@ class PiecesTest {
         //[ ][ ][ ][ ][ ]  2
         //[ ][ ][ ][ ][ ]  1
         // a  b  c  d  e
-        val table: Board = Pieces.pawn.bigTable(9)
+        val table: Board = Pieces.pawn.bigTable(5)
 
         println(table)
 
