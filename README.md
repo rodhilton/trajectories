@@ -230,4 +230,9 @@ Let's look at a pawn.  A pawn can only move straight ahead (we don't take diagon
 
 So if we generate moves from c3 to c7, we get what we expect.
 
+TODO: this section coming soon.  Pawns are weird.
 
+remaining: 
+* weird piece
+* obstacles
+* the sample king move with 393 moves, all listed
