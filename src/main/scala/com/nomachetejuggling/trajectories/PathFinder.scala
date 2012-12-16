@@ -14,6 +14,7 @@ class PathFinder(piece: Piece) {
     }
 
     //TODO: some ugly duplication here with getPaths, but they ARE fundamentally different...
+    //TODO: this needs to be an Option, possible to have no path
     def getPath(implicit board: Board, start: Coordinates, end: Coordinates): Path = {
         val sum = getSum(board, start, end)
 
