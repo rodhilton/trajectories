@@ -1,22 +1,20 @@
-Trajectories
-============
+# Trajectories
 
 Project for Artificial Intelligence.
 
 This program takes as input a chess board with or without obstacles, an element p (a chess piece), and start and destination points on the chess board.  It will generate a shortest path (or all shortest paths) from the start to the destination using methods covered in Professor Boris Stilman's Artificial Intelligence class at University of Colorado Denver as well as in his book, "Linguistic Geometry: From Search to Construction"
 
-Requirements
-----
+## Requirements
+
 This program requires a JVM to run, with either java in the path or a JAVA_HOME variable set.
 
-Installation
-----
+## Installation
+
 The distribution file is trajectories.zip.  Unzip this into a directory of your choice and cd into it from a terminal.  In the examples below, I have extracted into `~/traj/`
 
 All examples were run in a unix environment, and thus run the script `trajectories`.  For Windows, use `trajectories.bat` instead.
 
-Usage
-----
+## Usage
 
 ```
 usage: trajectories
@@ -31,8 +29,7 @@ usage: trajectories
  -z,--size <arg>      Size of the board (must be <= 26)
 ```
 
-Examples
-========
+# Examples
 
 Let's start simply, with a standard chess board in which we must move a king at a4 to c6.
 
@@ -101,6 +98,8 @@ a4->b4->c4->d4
 
 Shortest path is 3 moves
 ```
+
+## Pieces
 
 This program supports multiple types of pieces including king, queen, bishop, knight, rook, pawn.  It also supports a 'weird' piece, but more on that later.
 
@@ -232,34 +231,58 @@ So if we generate moves from c3 to c7, we get what we expect.
 
 TODO: this section coming soon.  Pawns are weird.
 
+### Custom Pieces
+
 The system also supports a 'weird' piece.  This is a piece that doesn't move like any chess piece, in order to show how simple it is to define custom pieces.  Though a piece cannot be defined via commandline, it's easy to add one.
 
-The 'weird' piece moves as follows: move like a king, unless you're sitting on a column that's a vowel, in which case move like a queen.  The tab15 for this piece looks like this:
+The 'weird' piece moves as follows: it can move one square vertically or horizontally, but 2 squares diagonally.  Here is the tab15 for it:
 
 ```
-[2][2][2][3][3][3][3][3][2][3][3][3][3][3][2]  15
-[3][2][2][2][3][3][3][3][2][3][3][3][3][2][2]  14
-[3][3][2][2][2][3][3][3][2][3][3][3][2][2][2]  13
-[3][3][3][2][2][2][3][3][2][3][3][2][2][2][3]  12
-[3][3][3][3][2][2][2][3][2][3][2][2][2][3][3]  11
-[3][3][3][3][3][2][2][2][2][2][2][2][3][3][3]  10
-[2][2][2][2][2][2][1][1][1][2][2][2][2][2][2]  9
-[2][2][2][2][2][2][1][0][1][2][2][2][2][2][2]  8
-[2][2][2][2][2][2][1][1][1][2][2][2][2][2][2]  7
-[3][3][3][3][3][2][2][2][2][2][2][2][3][3][3]  6
-[3][3][3][3][2][2][2][3][2][3][2][2][2][3][3]  5
-[3][3][3][2][2][2][3][3][2][3][3][2][2][2][3]  4
-[3][3][2][2][2][3][3][3][2][3][3][3][2][2][2]  3
-[3][2][2][2][3][3][3][3][2][3][3][3][3][2][2]  2
-[2][2][2][3][3][3][3][3][2][3][3][3][3][3][2]  1
+[5][4][5][5][5][4][5][5][5][4][5][5][5][4][5]  15
+[4][3][4][4][4][3][4][4][4][3][4][4][4][3][4]  14
+[5][4][4][3][4][4][4][3][4][4][4][3][4][4][5]  13
+[5][4][3][2][3][3][3][2][3][3][3][2][3][4][5]  12
+[5][4][4][3][3][2][3][3][3][2][3][3][4][4][5]  11
+[4][3][4][3][2][1][2][2][2][1][2][3][4][3][4]  10
+[5][4][4][3][3][2][2][1][2][2][3][3][4][4][5]  9
+[5][4][3][2][3][2][1][0][1][2][3][2][3][4][5]  8
+[5][4][4][3][3][2][2][1][2][2][3][3][4][4][5]  7
+[4][3][4][3][2][1][2][2][2][1][2][3][4][3][4]  6
+[5][4][4][3][3][2][3][3][3][2][3][3][4][4][5]  5
+[5][4][3][2][3][3][3][2][3][3][3][2][3][4][5]  4
+[5][4][4][3][4][4][4][3][4][4][4][3][4][4][5]  3
+[4][3][4][4][4][3][4][4][4][3][4][4][4][3][4]  2
+[5][4][5][5][5][4][5][5][5][4][5][5][5][4][5]  1
  a  b  c  d  e  f  g  h  i  j  k  l  m  n  o 
 ```
 
-What is interesting here is that the tab15 is of less use than the tab15 for other pieces, since you can't directly overlay the 8x8 grid of a chess board without it changing the letters.  Moves *must* be calculated from scratch on the board when working with the weird piece.
+Here are the paths of the weird piece from d2 to h8.
 
-Nonetheless, the program rapidly generates paths.  Here are the paths of the weird piece from d2 to h8.
+```
+air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p weird -s d2 -d h8 --all
+Number of shortest trajectories from d2 to h8: 6
+Here's one of them: 
+
+[ ][ ][ ][ ][ ][ ][ ][4]  8
+[ ][ ][ ][ ][ ][ ][ ][3]  7
+[ ][ ][ ][ ][ ][ ][ ][2]  6
+[ ][ ][ ][ ][ ][ ][ ][ ]  5
+[ ][ ][ ][ ][ ][1][ ][ ]  4
+[ ][ ][ ][ ][ ][ ][ ][ ]  3
+[ ][ ][ ][0][ ][ ][ ][ ]  2
+[ ][ ][ ][ ][ ][ ][ ][ ]  1
+ a  b  c  d  e  f  g  h 
+
+d2->d3->f5->f6->h8
+d2->d3->f5->h7->h8
+d2->d3->d4->f6->h8
+d2->f4->f5->f6->h8
+d2->f4->f5->h7->h8
+d2->f4->h6->h7->h8
+
+Shortest path is 4 moves
+```
 
 remaining: 
-* weird piece
 * obstacles
 * the sample king move with 393 moves, all listed
