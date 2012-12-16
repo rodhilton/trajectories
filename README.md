@@ -226,4 +226,8 @@ d1->c3->e4->f6->g8
 Shortest path is 4 moves
 ```
 
+Let's look at a pawn.  A pawn can only move straight ahead (we don't take diagonals for taking a piece into account) and cannot move backwards.
+
+So if we generate moves from c3 to c7, we get what we expect.
+
 
