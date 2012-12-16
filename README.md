@@ -34,7 +34,7 @@ usage: trajectories
 Let's start simply, with a standard chess board in which we must move a king at a4 to c6.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d c6
+$ bin/trajectories -p king -s a4 -d c6
 [ ][ ][ ][ ][ ][ ][ ][ ]  8
 [ ][ ][ ][ ][ ][ ][ ][ ]  7
 [ ][ ][2][ ][ ][ ][ ][ ]  6
@@ -55,7 +55,7 @@ As you can imagine, there is only one shortest path from a4 to c6, which is prin
 Let's make things a bit more complicated and do a trajectory with multiple equal paths.   We'll go from a4 to d4.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d d4
+$ bin/trajectories -p king -s a4 -d d4
 [ ][ ][ ][ ][ ][ ][ ][ ]  8
 [ ][ ][ ][ ][ ][ ][ ][ ]  7
 [ ][ ][ ][ ][ ][ ][ ][ ]  6
@@ -74,7 +74,7 @@ Shortest path is 3 moves
 This outputs a single path, one of the many that are equal.  We can add the -a or --all parameter to have the program print all such paths.  It will only graph one (at random), but it will print all of them as a list.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a4 -d d4 --all
+$ bin/trajectories -p king -s a4 -d d4 --all
 Number of shortest trajectories from a4 to d4: 7
 Here's one of them: 
 
@@ -106,7 +106,7 @@ This program supports multiple types of pieces including king, queen, bishop, kn
 Let's see how paths look for each of the different types.  Let's generate a queen's path from b4 to f6.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p queen -s b4 -d f6 --all
+$ bin/trajectories -p queen -s b4 -d f6 --all
 Number of shortest trajectories from b4 to f6: 9
 Here's one of them: 
 
@@ -136,7 +136,7 @@ Shortest path is 2 moves
 Now, a rook's path from e2 to b6
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p rook -s e2 -d b6 --all
+$ bin/trajectories -p rook -s e2 -d b6 --all
 Number of shortest trajectories from e2 to b6: 2
 Here's one of them: 
 
@@ -159,7 +159,7 @@ Shortest path is 2 moves
 And a bishop's path from c1 to c7.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p bishop -s c1 -d c7 --all
+$ bin/trajectories -p bishop -s c1 -d c7 --all
 Number of shortest trajectories from c1 to c7: 1
 Here it is: 
 
@@ -181,7 +181,7 @@ Shortest path is 2 moves
 What happens if we try to generate the bishop's path from c1 to c8?  Those spaces have different parity, meaning if you were to color the spaces like a regular chess board, one would be black and the other would be white.  There's no way for a bishop to ever move off a space of its own color, so c1 to c8 is actually impossible.  The program verifies this is the case:
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p bishop -s c1 -d c8 --all
+$ bin/trajectories -p bishop -s c1 -d c8 --all
 Number of shortest trajectories from c1 to c8: 0
 It's impossible to reach the destination from the start position.
 ```
@@ -189,7 +189,7 @@ It's impossible to reach the destination from the start position.
 Let's now try a knight's path from d1 to g8.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p knight -s d1 -d g8 --all
+$ bin/trajectories -p knight -s d1 -d g8 --all
 Number of shortest trajectories from d1 to g8: 12
 Here's one of them: 
 
@@ -224,7 +224,7 @@ Let's look at a pawn.  A pawn can only move straight ahead (we don't take diagon
 So if we generate moves from c3 to c7, we get what we expect.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p pawn -s c3 -d c7 --all
+$ bin/trajectories -p pawn -s c3 -d c7 --all
 Number of shortest trajectories from c3 to c7: 1
 Here it is: 
 
@@ -271,7 +271,7 @@ The 'weird' piece moves as follows: it can move one square vertically or horizon
 Here are the paths of the weird piece from d2 to h8.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p weird -s d2 -d h8 --all
+$ bin/trajectories -p weird -s d2 -d h8 --all
 Number of shortest trajectories from d2 to h8: 6
 Here's one of them: 
 
@@ -308,7 +308,7 @@ As a result, we can be confident do the exhaustive recursive nature of path gene
 Let's generate all of the paths of king from a5 to h5.  This is a very long listing, but it's exhaustive.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -s a5 -d h5 --all
+$ bin/trajectories -p king -s a5 -d h5 --all
 Number of shortest trajectories from a5 to h5: 393
 Here's one of them: 
 
@@ -728,7 +728,7 @@ The program also allows you to customize the board space in a handful of differe
 One way that you can alter the board is by changing the size from the default of 8.  Let's adjust the size of the board to 10, and move from c3 to j8.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p king -z 10 -s c3 -d j8 --all
+$ bin/trajectories -p king -z 10 -s c3 -d j8 --all
 Number of shortest trajectories from c3 to j8: 28
 Here's one of them: 
 
@@ -781,7 +781,7 @@ Boards can be requested up to 26 squares in size (after which we'd run out of le
 Let's create a board of 26x26, and find paths for the queen from a3 to z20.
 
 ```
-air0day@babbage:~/traj ±(master ✓) » bin/trajectories -p queen -z 26 -s a3 -d z20 --all
+$ bin/trajectories -p queen -z 26 -s a3 -d z20 --all
 Number of shortest trajectories from a3 to z20: 5
 Here's one of them: 
 
@@ -829,7 +829,7 @@ Users can mark certain parts of the board as unavailable or illegal.  To do this
 Let's take our earlier path from a5 to h5 and drastically reduce the number of possible moves by placing a wall going down the center of the board.
 
 ```
-air0day@babbage:~/traj ±(master ✗) » bin/trajectories -p king -s a5 -d h5 \
+$ bin/trajectories -p king -s a5 -d h5 \
  -i e1,e2,e3,e4,e6,e7,e8,d1,d2,d3,d4,d6,d7,d8 --all
 Number of shortest trajectories from a5 to h5: 49
 Here's one of them: 
@@ -900,7 +900,7 @@ Shortest path is 7 moves
 We can do lots of interesting things by adding obstacles.  Let's add a whole bunch so that the shortest paths are much longer.  Since this increases the total number of possible paths so much, we'll be trimming out a chunk of the actual path output.
 
 ```
-air0day@babbage:~/traj ±(master ✗) » bin/trajectories -p king -s a1 -d h1 \
+$ bin/trajectories -p king -s a1 -d h1 \
  -i b1,c1,d1,e1,f1,g1,c2,d2,e2,f2,d3,e3,e4,e5,e6,e7 -all
 Number of shortest trajectories from a1 to h1: 1862
 Here's one of them: 
