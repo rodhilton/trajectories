@@ -507,7 +507,7 @@ I enjoyed doing this, and it was great Scala practice.  If you look at the code,
 
 Every class was designed in a TDD fashion, in a manner similar to the projects in Martin Odersky's Functional Programming Principles in Scala course on Coursera.  That is to say, I would write an interface for a very small unit of functionality, write failing tests for it, then make it work.  I'd build new functionality on old functionality by composing functions together until eventually the class was complete.  It was stunning how often this method led to code working correctly on the first try.  Due to the strong type system I used, a number of would-be bugs were actually caught by the compiler, so getting the code to successfully compile often took longer than in most projects I work on, but once it compiled it almost always worked correctly the first time.  Gluing components together was incredibly smooth, and I felt that using strict TDD with Scala is what allowed me to finish a semester-long term project in 3 days.
 
-# Coming Soon
+## Future Work
 
 Though this project is completed and turned in now, there are still a couple of things nagging at my mind about the code.  For one, there is a bit more duplication than I'd like in a few areas, particularly `PathFinder`.  There are also some early functions I wrote in `Board` which I can probably refactor to more elegantly use more general functions that I wrote later, and I'd like to do that knowing the safety of the unit tests will keep things working.
 
