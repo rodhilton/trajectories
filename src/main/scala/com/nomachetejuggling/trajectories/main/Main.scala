@@ -53,7 +53,7 @@ class Main() {
 
                 if (startCoord.isEmpty || destCoord.isEmpty) throw new ParseException("Coordinates are in invalid format")
                 if (piece.isEmpty) throw new ParseException("No piece known by name " + pieceInput)
-                if (all && size > 10) throw new ParseException("Cannot request all paths on extremely large boards")
+                //if (all && size > 10) throw new ParseException("Cannot request all paths on extremely large boards")
 
                 val pathFinder = new PathFinder(piece.get)
 
