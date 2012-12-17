@@ -34,29 +34,19 @@ trait Board {
     def isLegal(coords: Coordinates): Boolean = contains(coords) && !illegalSpaces.contains(coords)
     def isLegal(c: Char, i: Int): Boolean = isLegal((c,i))
 
-    //TODO: ugly duplication
-    def set(pairs: (Coordinates, Int)*): Board = {
+    def set(pairs: Iterable[(Coordinates, Int)]): Board = {
         pairs.foldLeft(this) {
             (b: Board, pair: (Coordinates, Int)) => b.set(pair._1, pair._2)
         }
     }
-    def illegal(coords: Coordinates*): Board = {
-        coords.foldLeft(this) {
-            (b: Board, c: Coordinates) => b.illegal(c)
-        }
-    }
+    def set(pairs: (Coordinates, Int)*): Board = set(pairs.toSeq)
 
     def illegal(coords: Iterable[Coordinates]): Board = {
         coords.foldLeft(this) {
             (b: Board, c: Coordinates) => b.illegal(c)
         }
     }
-
-    def set(pairs: Iterable[(Coordinates, Int)]): Board = {
-        pairs.foldLeft(this) {
-            (b: Board, pair: (Coordinates, Int)) => b.set(pair._1, pair._2)
-        }
-    }
+    def illegal(coords: Coordinates*): Board = illegal(coords.toSeq)
 
     def overlay(otherBoard: Board, mySpot: Coordinates, joiner: ((Int, Int) => Int)): Board = {
         overlay(otherBoard, mySpot, ('a', otherBoard.size), joiner)
@@ -80,10 +70,15 @@ object Board {
     val intersection = (a: Set[Coordinates], b: Set[Coordinates]) => a & b
     val union = (a: Set[Coordinates], b: Set[Coordinates]) => a ++ b
 
-    case class BoardImpl(override val size: Int, boardSpace: Map[Coordinates, Int], override val illegalSpaces: Set[Coordinates]) extends Board {
+    case class BoardImpl(override val size: Int,
+                         boardSpace: Map[Coordinates, Int],
+                         override val illegalSpaces: Set[Coordinates]) extends Board {
+
         val columns = ('a' to ('a' to 'z')(size - 1))
         val rows = (1 to size).reverse
+
         private lazy val allSpaces = columns.flatMap(c => rows.map(r => (c, r))).toSet
+
         override lazy val legalSpaces = allSpaces -- illegalSpaces
         override lazy val values = boardSpace.values.toSet
         override lazy val toMap: Map[Coordinates, Int] = boardSpace
@@ -93,6 +88,7 @@ object Board {
         override def set(coordinates: Coordinates, value: Int): Board = {
             assert((columns.head, size) to (columns.last, 1) contains coordinates, "Tried to set outside of bounds: " + coordinates + ", but size is " + size)
             assert(!illegalSpaces.contains(coordinates), "Cannot set a value on an illegal space: "+coordinates)
+
             new BoardImpl(size, boardSpace.updated(coordinates, value), illegalSpaces)
         }
 
@@ -102,9 +98,7 @@ object Board {
             new BoardImpl(size, boardSpace-illegalCoords, illegalSpaces+illegalCoords)
         }
 
-        override def legal(legalCoords: Coordinates): Board = {
-            new BoardImpl(size, boardSpace, illegalSpaces - legalCoords)
-        }
+        override def legal(legalCoords: Coordinates): Board = new BoardImpl(size, boardSpace, illegalSpaces - legalCoords)
 
         override def get(coordinates: Coordinates): Option[Int] = boardSpace.get(coordinates)
 
