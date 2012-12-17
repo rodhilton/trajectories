@@ -1,7 +1,7 @@
 package com.nomachetejuggling.trajectories
 
 import annotation.tailrec
-import scala.collection.mutable.{Map=>MutableMap}
+import scala.collection.mutable.{Map => MutableMap}
 
 object Piece {
     val normal = (from: Coordinates, to: Coordinates) => (from, to)
@@ -11,26 +11,25 @@ object Piece {
 
 case class Piece(
                     isValid: (Coordinates, Coordinates) => Boolean,
-                    reverseTransformer: (Coordinates, Coordinates) => (Coordinates, Coordinates) = Piece.normal
+                    reverser: (Coordinates, Coordinates) => (Coordinates, Coordinates) = Piece.normal
                     ) {
 
     lazy val reverse: Piece = {
         val transformedIsValid = (from: Coordinates, to: Coordinates) => {
-            val reversed = reverseTransformer(from, to)
+            val reversed = reverser(from, to)
             isValid(reversed._1, reversed._2)
         }
-        Piece(transformedIsValid, reverseTransformer)
+        Piece(transformedIsValid, reverser)
     }
-
-    def bigTable(size: Int = 15): Board = movesStartingAt(Board(size), Coordinates.fromNumeric(size / 2 + 1, size / 2 + 1))
 
     def movesStartingAt(board: Board, startPosition: Coordinates): Board = calculateMovesForBoard(board.set(startPosition -> 0), 0)
 
     private val stCache: MutableMap[(Board, Coordinates, Int), Board] = MutableMap()
+
     def st(board: Board, start: Coordinates, index: Int): Board = {
         val key: (Board, Coordinates, Int) = (board, start, index)
 
-        if(!stCache.isDefinedAt(key))
+        if (!stCache.isDefinedAt(key))
             stCache.put(key, movesStartingAt(board, start).filterWhere(v => v == index))
 
         stCache(key)

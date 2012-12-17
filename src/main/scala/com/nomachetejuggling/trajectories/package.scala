@@ -1,9 +1,10 @@
 package com.nomachetejuggling
 
 package object trajectories {
+
     object Coordinates {
-        def fromNumeric(coordsNumeric: Tuple2[Int, Int]) = new Coordinates(('a' to 'z')(coordsNumeric._1-1), coordsNumeric._2)
-        def fromNumeric(col: Int, row: Int) = new Coordinates(('a' to 'z')(col-1), row)
+        def fromNumeric(col: Int, row: Int): Coordinates = new Coordinates(('a' to 'z')(col-1), row)
+        def fromNumeric(coordsNumeric: Tuple2[Int, Int]): Coordinates = fromNumeric(coordsNumeric._1, coordsNumeric._2)
     }
 
     type Coordinates = Tuple2[Char, Int]
@@ -13,23 +14,8 @@ package object trajectories {
     implicit def toArea(area: Tuple2[Coordinates, Coordinates]) = new Area(area._1, area._2)
 
     class CoordinatesOps(coords: Coordinates) {
-        lazy val column = coords._1
-        lazy val col = column
+        lazy val col = coords._1
         lazy val row = coords._2
-
-        //Pretty sure I can figure out how to make one of these call the other
-        def add(offset: Tuple2[Int, Int]): Coordinates = {
-            ((coords._1 + offset._1).toChar, coords._2 + offset._2)
-        }
-
-        def add(size: Int): Coordinates = {
-            assert(coords.col >= size, "Trying to find the bottom right without enough room: "+coords+" - "+size)
-            assert(coords.row - size >= 0, "Trying to find the bottom right without enough room: "+coords+" - "+size)
-            ((coords.col + size - 1).toChar, coords.row - size + 1)
-        }
-
-        def +(offset: Tuple2[Int, Int]): Coordinates = add(offset)
-        def +(size: Int): Coordinates = add(size)
 
         def to(other: Coordinates): Area = {
             val area = (coords, other)
@@ -37,11 +23,6 @@ package object trajectories {
             area
         }
 
-        def -(other: Coordinates): (Int, Int) ={
-            (col - other.col, row - other.row)
-        }
-
-        lazy val asNumeric: (Int, Int) = (column-'a'+1, row)
+        lazy val asNumeric: (Int, Int) = (col-'a'+1, row)
     }
-
 }

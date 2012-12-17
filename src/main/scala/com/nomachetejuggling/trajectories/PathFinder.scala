@@ -3,27 +3,25 @@ package com.nomachetejuggling.trajectories
 class PathFinder(piece: Piece) {
     def getSum(board: Board, start: Coordinates, end: Coordinates): Board = {
         val startBoard = piece.calculateMovesForBoard(board.set(start -> 0))
-
         val destBoard = piece.reverse.calculateMovesForBoard(board.set(end -> 0))
 
         val sum = startBoard + destBoard
 
         val shortestPathLength = sum(end)
-        sum.filterWhere(v => v == shortestPathLength)
+
+        sum.filterWhere(_ == shortestPathLength)
     }
 
     def possibleMoves(thePath: List[Coordinates], sum: Board, board: Board): Set[Coordinates] = {
-        thePath.zipWithIndex.foldLeft(sum) {
-            case (sumBoard: Board, (prevCoords: Coordinates, prevIndex: Int)) => {
-                val st = piece.st(board, prevCoords, prevIndex + 1)
-                st intersect sumBoard
-            }
-        }.activeSpaces
+        thePath.zipWithIndex.map {
+            case (prevCoords: Coordinates, prevIndex: Int) => piece.st(board, prevCoords, prevIndex + 1)
+        }.foldLeft(sum)(_ & _).activeSpaces
     }
 
     //TODO: some ugly duplication here with getPaths, but they ARE fundamentally different...
     //TODO: this needs to be an Option, possible to have no path
     //TODO: this should be tail recursive
+    //TODO: vars, ugh
     def getPath(implicit board: Board, start: Coordinates, end: Coordinates): Path = {
         val sum = getSum(board, start, end)
 
@@ -34,6 +32,7 @@ class PathFinder(piece: Piece) {
             val moves = possibleMoves(thePath, sum, board)
 
             val selectedSpace = util.Random.shuffle(moves.toList).head
+
             thePath = selectedSpace :: thePath
             current = selectedSpace
         }
@@ -60,7 +59,7 @@ class PathFinder(piece: Piece) {
 
         val allPaths = paths(List(start :: Nil))
 
-        allPaths.map((p: List[Coordinates]) => new Path(p))
+        allPaths.map(new Path(_))
     }
 }
 

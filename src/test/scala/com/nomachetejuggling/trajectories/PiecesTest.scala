@@ -14,7 +14,7 @@ class PiecesTest {
         //[1][ ][2][ ][1]  1
         // a  b  c  d  e
 
-        val table: Board = Pieces.bishop.bigTable(5)
+        val table: Board = centeredTableFor(5, Pieces.bishop)
 
         assertEquals(table.size, 5)
         assertEquals(table('c',3), 0)
@@ -29,7 +29,7 @@ class PiecesTest {
         //[1][0][1]  2
         //[2][1][2]  1
         // a  b  c
-        val table: Board = Pieces.rook.bigTable(3)
+        val table: Board = centeredTableFor(3, Pieces.rook)
 
         assertEquals(table.size, 3)
         assertEquals(table('b',2), 0)
@@ -45,7 +45,8 @@ class PiecesTest {
         //[2][1][1][1][2]  2
         //[1][2][1][2][1]  1
         // a  b  c  d  e
-        val table: Board = Pieces.queen.bigTable(5)
+
+        val table: Board = centeredTableFor(5, Pieces.queen)
 
         assertEquals(table.size, 5)
         assertEquals(table('c',3), 0)
@@ -62,7 +63,8 @@ class PiecesTest {
         //[2][1][1][1][2]  2
         //[2][2][2][2][2]  1
         // a  b  c  d  e
-        val table: Board = Pieces.king.bigTable(5)
+
+        val table: Board = centeredTableFor(5, Pieces.king)
 
         assertEquals(table.size, 5)
         assertEquals(table('c',3), 0)
@@ -78,7 +80,8 @@ class PiecesTest {
         //[1][2][3][2][1]  2
         //[4][1][2][1][4]  1
         // a  b  c  d  e
-        val table: Board = Pieces.knight.bigTable(5)
+
+        val table: Board = centeredTableFor(5, Pieces.knight)
 
         assertEquals(table.size, 5)
         assertEquals(table('c',3), 0)
@@ -96,7 +99,8 @@ class PiecesTest {
         //[ ][ ][ ][ ][ ]  2
         //[ ][ ][ ][ ][ ]  1
         // a  b  c  d  e
-        val table: Board = Pieces.pawn.bigTable(5)
+
+        val table: Board = centeredTableFor(5, Pieces.pawn)
 
         println(table)
 
@@ -132,8 +136,8 @@ class PiecesTest {
         //[4][3][4][4][4][3][4][4][4][3][4][4][4][3][4]  2
         //[5][4][5][5][5][4][5][5][5][4][5][5][5][4][5]  1
         // a  b  c  d  e  f  g  h  i  j  k  l  m  n  o
-        val table: Board = Pieces.weird.bigTable(15)
-        println(table)
+
+        val table: Board = centeredTableFor(15, Pieces.weird)
 
         assertEquals(table('g',9), 2)
         assertEquals(table('f',10), 1)
@@ -185,6 +189,10 @@ class PiecesTest {
 
         assertFalse(blackPawn.isValid(('a', 2), ('a',3)))
         assertTrue(blackPawn.isValid(('a', 3), ('a',2)))
+    }
+
+    private def centeredTableFor(size: Int, piece: Piece): Board = {
+        piece.movesStartingAt(Board(size), new Coordinates(('a' to 'z')((size / 2 + 1)-1), size / 2 + 1))
     }
 
 }

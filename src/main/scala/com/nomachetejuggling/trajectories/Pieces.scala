@@ -7,23 +7,23 @@ object Pieces {
     lazy val bishop = Piece(Moves.bishopMove)
     lazy val knight = Piece(Moves.knightMove)
     lazy val rook = Piece(Moves.rookMove)
-    lazy val pawn = Piece(Moves.pawnMove, Piece.flip)
+    lazy val pawn = Piece(Moves.pawnMove, reverser = Piece.flip)
     lazy val weird = Piece(Moves.weirdMove)
 
     private object Moves {
-        lazy val rookMove = (from:Coordinates, to: Coordinates) => {
+        lazy val rookMove = (from: Coordinates, to: Coordinates) => {
             val fromN = from.asNumeric
             val toN = to.asNumeric
             fromN._1 == toN._1 || fromN._2 == toN._2
         }
 
-        lazy val pawnMove = (from:Coordinates, to: Coordinates) => {
+        lazy val pawnMove = (from: Coordinates, to: Coordinates) => {
             val fromN = from.asNumeric
             val toN = to.asNumeric
             fromN._1 == toN._1 && toN._2 == fromN._2 + 1
         }
 
-        lazy val bishopMove = (from:Coordinates, to: Coordinates) => {
+        lazy val bishopMove = (from: Coordinates, to: Coordinates) => {
             val fromN = from.asNumeric
             val toN = to.asNumeric
             val offsetHorizontal = (fromN._1 - toN._1).abs
@@ -32,7 +32,7 @@ object Pieces {
             offsetHorizontal == offsetVertical
         }
 
-        lazy val kingMove = (from:Coordinates, to: Coordinates) => {
+        lazy val kingMove = (from: Coordinates, to: Coordinates) => {
             val fromN = from.asNumeric
             val toN = to.asNumeric
             val offsetHorizontal = (fromN._1 - toN._1).abs
@@ -41,7 +41,7 @@ object Pieces {
             offsetHorizontal <= 1 && offsetVertical <= 1
         }
 
-        lazy val knightMove = (from:Coordinates, to: Coordinates) => {
+        lazy val knightMove = (from: Coordinates, to: Coordinates) => {
             val fromN = from.asNumeric
             val toN = to.asNumeric
             val offsetHorizontal = (fromN._1 - toN._1).abs
@@ -51,7 +51,7 @@ object Pieces {
                 (offsetHorizontal == 2 && offsetVertical == 1)
         }
 
-        lazy val weirdMove = (from:Coordinates, to: Coordinates) => {
+        lazy val weirdMove = (from: Coordinates, to: Coordinates) => {
             val fromN = from.asNumeric
             val toN = to.asNumeric
             val offsetHorizontal = (fromN._1 - toN._1).abs
@@ -62,8 +62,8 @@ object Pieces {
                 (offsetHorizontal != offsetVertical && ((offsetHorizontal == 0 && offsetVertical == 1) || (offsetHorizontal == 1 && offsetVertical == 0)))
         }
 
-        lazy val queenMove = (from:Coordinates, to: Coordinates) => {
-            bishopMove(from,to) || rookMove(from,to)
+        lazy val queenMove = (from: Coordinates, to: Coordinates) => {
+            bishopMove(from, to) || rookMove(from, to)
         }
     }
 
