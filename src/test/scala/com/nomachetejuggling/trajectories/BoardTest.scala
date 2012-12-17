@@ -218,10 +218,10 @@ class BoardTest {
     def canGetTopLeftOffset() {
         val b = Board(3)
 
-        assertEquals(b.getTopLeftOffset(('b', 1)), (-1, 2))
-        assertEquals(b.getTopLeftOffset(('b', 2)), (-1, 1))
-        assertEquals(b.getTopLeftOffset(('a', 3)), (0, 0))
-        assertEquals(b.getTopLeftOffset(('c', 1)), (-2, 2))
+        assertEquals(b.getTopLeft - ('b', 1), (-1, 2))
+        assertEquals(b.getTopLeft - ('b', 2), (-1, 1))
+        assertEquals(b.getTopLeft - ('a', 3), (0, 0))
+        assertEquals(b.getTopLeft - ('c', 1), (-2, 2))
     }
 
 

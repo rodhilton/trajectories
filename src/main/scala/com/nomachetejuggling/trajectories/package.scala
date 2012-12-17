@@ -37,6 +37,10 @@ package object trajectories {
             area
         }
 
+        def -(other: Coordinates): (Int, Int) ={
+            (col - other.col, row - other.row)
+        }
+
         lazy val asNumeric: (Int, Int) = (column-'a'+1, row)
     }
 
