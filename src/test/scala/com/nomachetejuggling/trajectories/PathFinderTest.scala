@@ -70,7 +70,7 @@ class PathFinderTest {
 
         val path = pathFinder.getPath(Board(15), ('h',1), ('h',15))
 
-        assertEquals(path.coordsList.size,15)
+        assertEquals(path.get.coordsList.size,15)
     }
 
     @Test
@@ -80,7 +80,7 @@ class PathFinderTest {
 
         val path = pathFinder.getPath(Board(26), ('h',1), ('h',26))
 
-        assertEquals(path.coordsList.size,26)
+        assertEquals(path.get.coordsList.size,26)
     }
 
 }

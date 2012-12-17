@@ -1,5 +1,7 @@
 package com.nomachetejuggling.trajectories
 
+import annotation.tailrec
+
 class PathFinder(piece: Piece) {
     def getSum(board: Board, start: Coordinates, end: Coordinates): Board = {
         val startBoard = piece.calculateMovesForBoard(board.set(start -> 0))
@@ -18,31 +20,32 @@ class PathFinder(piece: Piece) {
         }.foldLeft(sum)(_ & _).activeSpaces
     }
 
-    //TODO: some ugly duplication here with getPaths, but they ARE fundamentally different...
-    //TODO: this needs to be an Option, possible to have no path
-    //TODO: this should be tail recursive
-    //TODO: vars, ugh
-    def getPath(implicit board: Board, start: Coordinates, end: Coordinates): Path = {
+    def getPath(implicit board: Board, start: Coordinates, end: Coordinates): Option[Path] = {
         val sum = getSum(board, start, end)
 
-        var thePath = start :: Nil
+        @tailrec
+        def path(partial: List[Coordinates]): List[Coordinates] = {
+            if(partial.head == end) partial
+            else {
+                val moves = possibleMoves(partial, sum, board)
 
-        var current = start
-        while (current != end) {
-            val moves = possibleMoves(thePath, sum, board)
-
-            val selectedSpace = util.Random.shuffle(moves.toList).head
-
-            thePath = selectedSpace :: thePath
-            current = selectedSpace
+                if (moves.isEmpty) List.empty
+                else path(moves.head :: partial)
+            }
         }
 
-        Path(thePath)
+
+        val thePath = path(start :: Nil)
+        thePath match {
+            case Nil => None
+            case p@_ => Some(Path(p))
+        }
     }
 
     def getPaths(implicit board: Board, start: Coordinates, end: Coordinates): List[Path] = {
         val sum = getSum(board, start, end)
 
+        @tailrec
         def paths(partials: List[List[Coordinates]]): List[List[Coordinates]] = {
             val partialsNotDone = partials.filter((p: List[Coordinates]) => p.head != end)
 

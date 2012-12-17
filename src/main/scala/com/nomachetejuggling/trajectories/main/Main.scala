@@ -57,35 +57,35 @@ class Main() {
 
                 val pathFinder = new PathFinder(piece.get)
 
+                val board = Board(size).illegal(illegal)
+
                 if (all) {
-                    val paths = pathFinder.getPaths(Board(size).illegal(illegal), startCoord.get, destCoord.get)
+                    val paths = pathFinder.getPaths(board, startCoord.get, destCoord.get)
 
-                    println("Number of shortest trajectories from " + startInput + " to " + destInput + ": " + paths.size)
-
-                    if (paths.size == 0) {
-                        println("It's impossible to reach the destination from the start position.")
-                    } else {
-                        val path =
-                            if (paths.size == 1) {
-                                println("Here it is: \n")
-                                paths.head
-                            } else {
-                                println("Here's one of them: \n")
-                                util.Random.shuffle(paths).head
-                            }
-                        println(path.toFullBoardString)
-                        println("")
-                        println(paths.mkString("\n"))
-
-                        println("\nShortest path is "+(path.size-1)+" moves")
+                    paths match {
+                        case Nil => println("It's impossible to reach the destination from the start position.")
+                        case path :: _ => {
+                            println("Number of shortest trajectories from " + startInput + " to " + destInput + ": " + paths.size)
+                            println( (if(paths.size == 1) "Here it is" else "Here's one of them") + ": \n")
+                            println(path.toFullBoardString)
+                            println("")
+                            println(paths.mkString("\n"))
+                            println("\nShortest path is "+(path.size-1)+" moves")
+                        }
                     }
 
                 } else {
-                    val path = pathFinder.getPath(Board(size).illegal(illegal), startCoord.get, destCoord.get)
-                    println(path.toFullBoardString)
-                    println("")
-                    println(path)
-                    println("\nShortest path is "+(path.size-1)+" moves")
+                    val pathOption = pathFinder.getPath(board, startCoord.get, destCoord.get)
+
+                    pathOption match {
+                        case None => println("It's impossible to reach the destination from the start position.")
+                        case Some(path) => {
+                            println(path.toFullBoardString)
+                            println("")
+                            println(path)
+                            println("\nShortest path is "+(path.size-1)+" moves")
+                        }
+                    }
                 }
 
             } else {
