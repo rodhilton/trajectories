@@ -1,8 +1,8 @@
 # RICH BOARD BRANCH
 
-This branch contains a "Rich Board".  The Board class was the first one I wrote, and I added to it any operation that I think might be useful in developing the real bulk of the code.  While all of that functionality works and has tests, I wound up needing only a fraction of it to complete the assignment.
+_This branch contains a "Rich Board".  The Board class was the first one I wrote, and I added to it any operation that I think might be useful in developing the real bulk of the code.  While all of that functionality works and has tests, I wound up needing only a fraction of it to complete the assignment._
 
-Thus, the next commit in master will be to remove a great deal of this unneeded code.  This branch represents the project before this code deletion occured, in case that code is needed.  The commit itself has also been marked "CODE DELETION" in the commit message, so that it can be reverted if need be.
+_Thus, the next commit in master will be to remove a great deal of this unneeded code.  This branch represents the project before this code deletion occured, in case that code is needed.  The commit itself has also been marked "CODE DELETION" in the commit message, so that it can be reverted if need be._
 
 # Trajectories
 
