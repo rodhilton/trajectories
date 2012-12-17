@@ -24,7 +24,6 @@ trait Board {
     def contains(coords: Coordinates): Boolean
     def isDefinedAt(coords: Coordinates): Boolean
     def toMap: Map[Coordinates, Int]
-    def getTopLeftOffset(coords: Coordinates): (Int, Int)
     def getTopLeft: Coordinates
 
     //Convenience Interface:
@@ -126,7 +125,7 @@ object Board {
         override def overlay(smallBoard: Board, mySpot: Coordinates, otherSpot: Coordinates, joiner: ((Int, Int) => Int)): Board = {
             assert(contains(mySpot), "Local board did not contain spot " + mySpot + ", size is " + size)
 
-            val offset = smallBoard.getTopLeftOffset(otherSpot)
+            val offset = smallBoard.getTopLeft - otherSpot
             val myTopLeft = mySpot + offset
 
             val cropped = crop(myTopLeft to (myTopLeft + smallBoard.size))
@@ -173,11 +172,6 @@ object Board {
             }
 
             new BoardImpl(area.topLeft.row - area.bottomRight.row + 1, offsetMap, offsetIllegalSpaces)
-        }
-
-        //Could this be as simple as getTopLeft - coords?  Perhaps in the Ops?
-        override def getTopLeftOffset(coords: Coordinates): (Int, Int) = {
-            ('a' - coords.col, size - coords.row)
         }
 
         override lazy val toString = {
