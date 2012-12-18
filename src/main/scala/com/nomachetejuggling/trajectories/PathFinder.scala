@@ -67,7 +67,7 @@ case class Path(coordsList: List[Coordinates])(implicit board: Board) {
 
     lazy val size = coordsList.size
 
-    lazy val toString: String = coordsList.reverse.map((c: Coordinates) => (c.col + "" + c.row)).mkString("->")
+    override lazy val toString: String = coordsList.reverse.map((c: Coordinates) => (c.col + "" + c.row)).mkString("->")
 
     lazy val toFullBoardString: String = board.set(coordsList.reverse.zipWithIndex).toString
 }

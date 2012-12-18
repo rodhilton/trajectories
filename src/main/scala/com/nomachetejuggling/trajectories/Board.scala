@@ -29,44 +29,6 @@ trait Board {
     def contains(coords: Coordinates): Boolean
 
     def isDefinedAt(coords: Coordinates): Boolean
-
-    //Convenience Interface:
-    def +(otherBoard: Board): Board = plus(otherBoard)
-
-    def &(otherBoard: Board): Board = intersect(otherBoard)
-
-    def contains(c: Char, i: Int): Boolean = contains((c, i))
-
-    def isDefinedAt(c: Char, i: Int): Boolean = isDefinedAt((c, i))
-
-    def isLegal(coords: Coordinates): Boolean = contains(coords) && !illegalSpaces.contains(coords)
-
-    def isLegal(c: Char, i: Int): Boolean = isLegal((c, i))
-
-    def set(pairs: Iterable[(Coordinates, Int)]): Board = {
-        pairs.foldLeft(this) {
-            (b: Board, pair: (Coordinates, Int)) => b.set(pair._1, pair._2)
-        }
-    }
-
-    def set(pairs: (Coordinates, Int)*): Board = set(pairs.toSeq)
-
-    def illegal(coords: Iterable[Coordinates]): Board = {
-        coords.foldLeft(this) {
-            (b: Board, c: Coordinates) => b.illegal(c)
-        }
-    }
-
-    def illegal(coords: Coordinates*): Board = illegal(coords.toSeq)
-
-    def apply(t: Coordinates): Int = get(t) match {
-        case Some(x) => x
-        case None => throw new NoSuchElementException
-    }
-
-    def apply(c: Char, i: Int): Int = this((c, i))
-
-    def filterWhere(predicate: (Int) => Boolean): Board = filter(t => predicate(t._2))
 }
 
 object Board {
