@@ -8,7 +8,6 @@ object Piece {
     val flip = (from: Coordinates, to: Coordinates) => ((from.col, -from.row), (to.col, -to.row))
 }
 
-
 case class Piece(
                     isValid: (Coordinates, Coordinates) => Boolean,
                     reverser: (Coordinates, Coordinates) => (Coordinates, Coordinates) = Piece.normal

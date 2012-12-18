@@ -65,11 +65,7 @@ trait Board {
 
     def apply(c: Char, i: Int): Int = this((c, i))
 
-    def filterWhere(predicate: (Int) => Boolean): Board = {
-        filter {
-            case (_: Coordinates, v: Int) => predicate(v)
-        }
-    }
+    def filterWhere(predicate: (Int) => Boolean): Board = filter(t => predicate(t._2))
 }
 
 object Board {

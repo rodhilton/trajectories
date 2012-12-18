@@ -14,18 +14,16 @@ class PathFinder(piece: Piece) {
         sum.filterWhere(_ == shortestPathLength)
     }
 
-    def possibleMoves(thePath: List[Coordinates], sum: Board, board: Board): Set[Coordinates] = {
-        thePath.zipWithIndex.map {
-            case (prevCoords: Coordinates, prevIndex: Int) => piece.st(board, prevCoords, prevIndex + 1)
-        }.foldLeft(sum)(_ & _).activeSpaces
-    }
+    def possibleMoves(thePath: List[Coordinates], sum: Board, board: Board): Set[Coordinates] = thePath.zipWithIndex.map(
+        zippedCoordinates => piece.st(board, zippedCoordinates._1, zippedCoordinates._2 + 1)
+    ).foldLeft(sum)(_ & _).activeSpaces
 
     def getPath(implicit board: Board, start: Coordinates, end: Coordinates): Option[Path] = {
         val sum = getSum(board, start, end)
 
         @tailrec
         def path(partial: List[Coordinates]): List[Coordinates] = {
-            if(partial.head == end) partial
+            if (partial.head == end) partial
             else {
                 val moves = possibleMoves(partial, sum, board)
 
@@ -33,7 +31,6 @@ class PathFinder(piece: Piece) {
                 else path(moves.head :: partial)
             }
         }
-
 
         val thePath = path(start :: Nil)
         thePath match {
@@ -69,7 +66,8 @@ class PathFinder(piece: Piece) {
 case class Path(coordsList: List[Coordinates])(implicit board: Board) {
 
     lazy val size = coordsList.size
-    def toFullBoardString: String = board.set(coordsList.reverse.zipWithIndex).toString
 
-    override def toString: String = coordsList.reverse.map((c: Coordinates) => (c.col + "" + c.row)).mkString("->")
+    lazy val toString: String = coordsList.reverse.map((c: Coordinates) => (c.col + "" + c.row)).mkString("->")
+
+    lazy val toFullBoardString: String = board.set(coordsList.reverse.zipWithIndex).toString
 }

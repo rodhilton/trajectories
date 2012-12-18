@@ -8,7 +8,7 @@ class AreaTest {
 
     @Test
     def shouldCheckForBoundaryRestrictions() {
-        val partial = (('b', 3) to('c', 2)).contains(_: Tuple2[Char, Int])
+        val partial = (('b', 3) to ('c', 2)).contains(_: Tuple2[Char, Int])
 
         assertFalse(partial(('a', 4)))
         assertFalse(partial(('a', 3)))
