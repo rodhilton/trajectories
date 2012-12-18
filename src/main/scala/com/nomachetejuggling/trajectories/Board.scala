@@ -15,6 +15,7 @@ trait Board {
     def activeSpaces: Set[Coordinates]
 
     def legalSpaces: Set[Coordinates]
+
     def illegalSpaces: Set[Coordinates]
 
     def plus(otherBoard: Board): Board
