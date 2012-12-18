@@ -149,12 +149,12 @@ class BoardTest {
     }
 
     @Test
-    def shouldSupportIllegalsWhenMerging() {
+    def shouldSupportIllegalsWhenAdding() {
 
         val a = Board(2).illegal(('a', 1))
         val b = Board(2).illegal(('b', 2))
 
-        val merged = a.merge(b, (i,j)=>i+j)
+        val merged = a + b
 
         assertFalse(merged.isLegal('a', 1))
         assertFalse(merged.isLegal('b', 2))
