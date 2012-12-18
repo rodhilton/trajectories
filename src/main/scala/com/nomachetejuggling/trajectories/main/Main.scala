@@ -12,7 +12,7 @@ object Main {
 class Main() {
     val PIECE = "piece"
     val START = "start"
-    val DEST= "dest"
+    val DEST = "dest"
     val SIZE = "size"
     val ALL = "all"
     val HELP = "help"
@@ -63,11 +63,11 @@ class Main() {
                         case Nil => println("It's impossible to reach the destination from the start position.")
                         case path :: _ => {
                             println("Number of shortest trajectories from " + startInput + " to " + destInput + ": " + paths.size)
-                            println( (if(paths.size == 1) "Here it is" else "Here's one of them") + ": \n")
+                            println((if (paths.size == 1) "Here it is" else "Here's one of them") + ": \n")
                             println(path.toFullBoardString)
                             println("")
                             println(paths.mkString("\n"))
-                            println("\nShortest path is "+(path.size-1)+" moves")
+                            println("\nShortest path is " + (path.size - 1) + " moves")
                         }
                     }
 
@@ -80,7 +80,7 @@ class Main() {
                             println(path.toFullBoardString)
                             println("")
                             println(path)
-                            println("\nShortest path is "+(path.size-1)+" moves")
+                            println("\nShortest path is " + (path.size - 1) + " moves")
                         }
                     }
                 }
@@ -100,7 +100,7 @@ class Main() {
 
     private def parseIllegal(s: String): Set[Coordinates] = {
         try {
-            s.split(",").flatMap (code => parseShortCode(code)).toSet
+            s.split(",").flatMap(code => parseShortCode(code)).toSet
         }
         catch {
             case _: Exception => Set.empty

@@ -106,10 +106,7 @@ class BoardTest {
     def shouldFilter() {
         val a = Board(5).set(('c', 2) -> 5, ('b', 1) -> 1)
 
-        val c = a.filter {
-            case ((col, row), value) =>
-                value > 1
-        }
+        val c = a.filterValue(5)
 
         assertEquals(c('c', 2), 5)
         assertTrue(c.get('b', 1).isEmpty)

@@ -11,7 +11,7 @@ class PathFinder(piece: Piece) {
 
         val shortestPathLength = sum(end)
 
-        sum.filterWhere(_ == shortestPathLength)
+        sum.filterValue(shortestPathLength)
     }
 
     def possibleMoves(thePath: List[Coordinates], sum: Board, board: Board): Set[Coordinates] = thePath.zipWithIndex.map(

@@ -29,16 +29,14 @@ case class Piece(
         val key: (Board, Coordinates, Int) = (board, start, index)
 
         if (!stCache.isDefinedAt(key))
-            stCache.put(key, movesStartingAt(board, start).filterWhere(v => v == index))
+            stCache.put(key, movesStartingAt(board, start).filterValue(index))
 
         stCache(key)
     }
 
     @tailrec
     final def calculateMovesForBoard(board: Board, startPosition: Int = 0): Board = {
-        val positions: Set[Coordinates] = board.filter {
-            case (coords: Coordinates, v: Int) => v == startPosition
-        }.activeSpaces
+        val positions: Set[Coordinates] = board.filterWhere(v => v == startPosition).activeSpaces
 
         val canMoveTo = for {
             position <- positions
